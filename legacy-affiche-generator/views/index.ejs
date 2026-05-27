@@ -1,0 +1,65 @@
+<%
+  // Variables passees par server.js (locals). En standalone elles sont null.
+  const _apiKey   = (typeof apiKey   !== 'undefined') ? apiKey   : null;
+  const _host     = (typeof host     !== 'undefined') ? host     : null;
+  const _embedded = (typeof embedded !== 'undefined') ? embedded : false;
+%><!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Generateur d'affiches — DecoShop Toulouse</title>
+  <!-- Favicons : .ico DecoShop officiel + PNG pour retina / iOS -->
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo.png" />
+  <link rel="apple-touch-icon" href="/assets/logo.png" />
+
+  <!-- Polices DecoShop : Montserrat (titres ExtraBold), Poppins (textes), Bebas Neue (compact / chiffres) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:ital,wght@0,300;0,400;0,500;1,400&family=Bebas+Neue&display=swap"
+  />
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- @page : toujours A4 paysage, marges nulles. -->
+  <style>@page { size: A4 landscape; margin: 0; }</style>
+
+  <% if (_embedded && _apiKey) { %>
+  <!-- App Bridge : pilote l'iframe Shopify admin (session token, navigation) -->
+  <meta name="shopify-api-key" content="<%= _apiKey %>" />
+  <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+  <% } %>
+
+  <!-- Config exposee au client (fallback fetch authentifie) -->
+  <script>
+    window.__DECOSHOP = {
+      embedded: <%= _embedded ? 'true' : 'false' %>,
+      apiKey:   <%- _apiKey ? JSON.stringify(_apiKey) : 'null' %>,
+      host:     <%- _host   ? JSON.stringify(_host)   : 'null' %>
+    };
+  </script>
+
+  <!-- Generateur QR code (cote client, pas d'API externe) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js" defer></script>
+</head>
+<body>
+
+  <%- include('partials/header') %>
+
+  <!-- ====================================================== -->
+  <!-- LAYOUT PRINCIPAL : 2 colonnes (form | apercu A4)        -->
+  <!-- ====================================================== -->
+  <main class="app-grid no-print">
+    <%- include('partials/form') %>
+    <%- include('partials/preview') %>
+  </main>
+
+  <%- include('partials/label-template') %>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

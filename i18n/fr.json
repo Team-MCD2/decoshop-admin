@@ -1,0 +1,400 @@
+{
+  "app": {
+    "name": "DecoShop Livreur",
+    "tagline": "Livraison · Toulouse"
+  },
+  "common": {
+    "loading": "Chargement…",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "validate": "Valider",
+    "close": "Fermer",
+    "retry": "Réessayer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "yes": "Oui",
+    "no": "Non",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "this_week": "Cette semaine",
+    "language": "Langue",
+    "logout": "Se déconnecter",
+    "optional": "optionnel"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion livreur",
+      "subtitle": "Connecte-toi avec ton compte DecoShop",
+      "email": "Email",
+      "email_placeholder": "ton.email@decoshop-toulouse.fr",
+      "password": "Mot de passe",
+      "password_placeholder": "Ton mot de passe",
+      "submit": "Se connecter",
+      "submitting": "Connexion en cours…",
+      "forgot": "Mot de passe oublié ?",
+      "errors": {
+        "invalid_credentials": "Email ou mot de passe incorrect",
+        "network": "Pas de connexion. Vérifie ton réseau.",
+        "unknown": "Une erreur est survenue. Réessaie.",
+        "not_livreur": "Ce compte n'a pas accès à l'application livreur"
+      }
+    },
+    "pin": {
+      "setup_title": "Crée ton code PIN",
+      "setup_subtitle": "Choisis un code à 4 ou 6 chiffres pour déverrouiller rapidement l'app",
+      "enter_title": "Saisis ton code PIN",
+      "enter_subtitle": "Pour accéder à l'app",
+      "confirm_title": "Confirme ton code",
+      "confirm_subtitle": "Entre-le une 2ème fois",
+      "length_hint": "4 à 6 chiffres",
+      "mismatch": "Les codes ne correspondent pas. Recommence.",
+      "incorrect": "Code incorrect",
+      "use_password": "Utiliser mot de passe à la place",
+      "errors": {
+        "insecure_context": "Le PIN nécessite HTTPS ou localhost (sécurité Web Crypto). Accède à l'app via https:// ou ouvre-la sur localhost.",
+        "insecure_context_hint": "Astuce dev : lance « npm run dev:https » pour activer HTTPS sur le réseau local."
+      }
+    }
+  },
+  "nav": {
+    "home": "Accueil",
+    "calendar": "Calendrier",
+    "performance": "Stats",
+    "profile": "Profil"
+  },
+  "home": {
+    "greeting_morning": "Bonjour",
+    "greeting_afternoon": "Bon après-midi",
+    "greeting_evening": "Bonsoir",
+    "today_kpi": {
+      "title": "Aujourd'hui",
+      "delivered": "{{count}} livré",
+      "delivered_plural": "{{count}} livrés",
+      "in_progress": "{{count}} en cours",
+      "remaining": "{{count}} restant",
+      "remaining_plural": "{{count}} restants",
+      "signature_rate": "Signature : {{rate}} %"
+    },
+    "to_deliver": "À livrer",
+    "no_deliveries": "Aucune livraison prévue aujourd'hui.",
+    "no_bls_for_creneau": "Aucune livraison sur ce créneau."
+  },
+  "bl": {
+    "status": {
+      "cree": "Créé",
+      "assigne": "Assigné",
+      "confirme": "Confirmé",
+      "release_demandee": "Demande envoyée",
+      "bloque": "Bloqué",
+      "en_livraison": "En livraison",
+      "en_route": "En route",
+      "livre": "Livré",
+      "signature_attendue": "Signature en attente",
+      "signe": "Signé",
+      "signature_expiree": "Signature expirée",
+      "echec_T1": "Échec (1ère tentative)",
+      "echec_T2": "Échec (2ème tentative)",
+      "abandon": "Abandonné",
+      "retour_planifie": "Retour planifié",
+      "retour_en_cours": "Retour en cours",
+      "retour_collecte": "Retour collecté"
+    },
+    "card": {
+      "items_one": "{{count}} article",
+      "items_other": "{{count}} articles",
+      "no_address": "Adresse non renseignée"
+    },
+    "actions": {
+      "details": "Voir détails",
+      "request_release": "Je suis dispo",
+      "release_pending": "Demande envoyée",
+      "release_sent": "Demande envoyée au vendeur",
+      "release_failed": "Échec de la demande",
+      "open_map": "Itinéraire",
+      "call_client": "Appeler",
+      "sms_client": "SMS",
+      "back": "Retour"
+    },
+    "detail": {
+      "client": "Client",
+      "address": "Adresse",
+      "address_complement": "Complément d'accès",
+      "floor": "Étage",
+      "elevator": "Ascenseur",
+      "elevator_yes": "Oui",
+      "elevator_no": "Non",
+      "door_code": "Code porte",
+      "phone": "Téléphone",
+      "articles": "Articles",
+      "fragile": "Fragile",
+      "no_articles": "Aucun article",
+      "creneau": "Créneau",
+      "amount": "Montant",
+      "order": "Commande",
+      "attempts": "Tentatives",
+      "redelivery_fee": "Frais de re-livraison",
+      "open_in_maps": "Ouvrir dans Maps",
+      "loading": "Chargement du BL…",
+      "not_found": "BL introuvable",
+      "back_home": "Retour à l'accueil"
+    },
+    "timeline": {
+      "title": "Suivi",
+      "step_assigne": "Assigné",
+      "step_confirme": "Confirmé",
+      "step_en_route": "En route",
+      "step_livre": "Livré",
+      "step_signe": "Signé"
+    },
+    "workflow": {
+      "title": "Actions",
+      "start_delivery": "Démarrer la livraison",
+      "starting": "Démarrage…",
+      "arrived": "Je suis arrivé",
+      "mark_delivered": "Marquer comme livré",
+      "delivering": "Mise à jour…",
+      "request_signature": "Demander la signature",
+      "report_failure": "Signaler un échec",
+      "blocked": "Action indisponible pour ce statut",
+      "confirmation_required": "Confirme l'action — irréversible.",
+      "confirm": "Oui, confirmer"
+    },
+    "gps": {
+      "starting": "Démarrage GPS…",
+      "active": "GPS actif",
+      "denied": "Géolocalisation refusée",
+      "denied_hint": "Autorise la localisation dans les paramètres du navigateur pour activer le tracking.",
+      "unavailable": "GPS indisponible",
+      "accuracy": "Précision : {{m}} m"
+    }
+  },
+  "map": {
+    "missing_token": "Mapbox non configuré",
+    "missing_token_hint": "Définis VITE_MAPBOX_TOKEN dans .env.local pour activer la carte.",
+    "no_coords": "Coordonnées GPS non renseignées pour ce client",
+    "loading": "Chargement de la carte…",
+    "open_in_google_maps": "Ouvrir dans Google Maps"
+  },
+  "signature": {
+    "draw_here": "Signez ici",
+    "clear": "Effacer",
+    "modal_title": "Signature électronique",
+    "method_canvas": "Signer ici (sur ton téléphone)",
+    "method_link": "Envoyer un lien au client",
+    "method_canvas_hint": "Le client signe directement sur ton téléphone.",
+    "method_link_hint": "Génère un lien valide 10 min — partage par SMS, email ou QR.",
+    "request": "Demander la signature",
+    "requesting": "Génération du lien…",
+    "request_again": "Renouveler le lien",
+    "expires_in": "Expire dans {{time}}",
+    "expired": "Lien expiré",
+    "expired_hint": "Le lien de signature a expiré. Tu peux en générer un nouveau.",
+    "share_link": "Partager le lien",
+    "email_sent": "Email envoyé à {{email}}",
+    "email_recipient": "Destinataire de l'email",
+    "share_label": "Signature DecoShop · BL {{numero}}",
+    "share_text": "Bonjour, voici le lien pour signer ton bon de livraison DecoShop : {{url}} (valable 10 min).",
+    "copy_link": "Copier",
+    "copied": "Copié !",
+    "scan_qr": "Scanner ce QR pour ouvrir le lien",
+    "submit": "Valider la signature",
+    "submitting": "Enregistrement…",
+    "signed_ok": "Signature enregistrée",
+    "signed_at": "Signé le {{date}}",
+    "signed_thanks": "Merci ! La livraison est validée.",
+    "parent_toggle": "Signé par un proche (mineur)",
+    "parent_name_label": "Nom et prénom du signataire",
+    "parent_name_placeholder": "Ex. Marie Durand",
+    "parent_link_label": "Lien avec le client (parent / tuteur…)",
+    "parent_link_placeholder": "Parent, conjoint, tuteur…",
+    "public": {
+      "title": "Signature de votre livraison",
+      "subtitle": "DecoShop Toulouse — réception du bon de livraison",
+      "bl_label": "Bon de livraison",
+      "client_label": "Destinataire",
+      "amount_label": "Montant TTC",
+      "delivery_label": "Mode de livraison",
+      "delivery_home": "Livraison à domicile",
+      "delivery_pickup": "Retrait en magasin",
+      "creneau_label": "Créneau",
+      "delivery_date_label": "Date prévue",
+      "articles_label": "Articles",
+      "articles_count": "{{count}} article",
+      "articles_count_plural": "{{count}} articles",
+      "consent": "En signant, je confirme avoir reçu la livraison décrite ci-dessus en bon état.",
+      "loading": "Vérification du lien…",
+      "expired_title": "Lien expiré",
+      "expired_body": "Le lien de signature a expiré. Demande à ton livreur d'en générer un nouveau.",
+      "not_found_title": "Lien invalide",
+      "not_found_body": "Ce lien de signature est introuvable ou n'existe plus.",
+      "already_signed_title": "Déjà signé",
+      "already_signed_body": "Cette livraison a déjà été signée — merci !",
+      "powered_by": "Signature sécurisée · DecoShop Toulouse"
+    },
+    "errors": {
+      "expired": "Le lien a expiré.",
+      "already_signed": "Ce bon de livraison a déjà été signé.",
+      "not_found": "Lien de signature introuvable.",
+      "invalid_data": "Signature invalide — merci de signer à nouveau.",
+      "no_client_email": "Le client n'a pas d'adresse email — ajoute-la avant de générer le lien.",
+      "bl_not_yours": "Ce BL n'est pas assigné à ton compte.",
+      "bl_invalid_status": "Le BL doit être marqué « livré » avant de demander la signature.",
+      "forbidden": "Action réservée à l'admin / vendeur.",
+      "already_signed_cannot_invalidate": "Cette signature a déjà été signée — elle est immuable.",
+      "email_send_failed": "Lien généré, mais l'envoi de l'email a échoué. Partage le lien manuellement.",
+      "generic": "Erreur lors de l'envoi. Réessaie."
+    }
+  },
+  "workflow": {
+    "errors": {
+      "not_yours": "Ce BL n'est pas assigné à ton compte.",
+      "invalid_transition": "Transition de statut non autorisée à cette étape.",
+      "no_profile": "Ton profil livreur n'est pas encore activé par l'admin.",
+      "not_found": "BL introuvable. Il a peut-être été supprimé.",
+      "unauth": "Session expirée — reconnecte-toi.",
+      "generic": "Impossible de mettre à jour le statut. Réessaie."
+    }
+  },
+  "failure": {
+    "modal_title": "Signaler un échec",
+    "intro": "Choisis le motif. Les motifs hors-faute-client sont sans frais.",
+    "reason_label": "Motif de l'échec",
+    "reasons": {
+      "client_absent": "Client absent",
+      "client_refuse": "Client refuse la livraison",
+      "adresse_introuvable": "Adresse introuvable",
+      "articles_endommages": "Articles endommagés",
+      "colis_perdu": "Colis perdu",
+      "meteo": "Météo défavorable",
+      "panne_vehicule": "Panne de véhicule",
+      "autre": "Autre motif"
+    },
+    "reasons_hint": {
+      "client_absent": "Personne sur place après tentative de contact.",
+      "client_refuse": "Le client refuse la livraison sans motif valable.",
+      "adresse_introuvable": "Adresse incorrecte ou inaccessible.",
+      "articles_endommages": "Articles abîmés — retour atelier.",
+      "colis_perdu": "Colis introuvable au départ ou perdu en route.",
+      "meteo": "Conditions météo rendant la livraison dangereuse.",
+      "panne_vehicule": "Véhicule en panne — livraison reportée.",
+      "autre": "Préciser dans le commentaire."
+    },
+    "no_fee": "sans frais",
+    "no_fee_explain": "Cas exonéré — pas de frais de re-livraison facturés au client.",
+    "comment_label": "Commentaire",
+    "comment_placeholder": "Précise le contexte (interphone, voisin, étage…)",
+    "photo_label": "Photo du litige",
+    "photo_pick": "Prendre une photo",
+    "photo_alt": "Photo du litige",
+    "gps_label": "Position GPS",
+    "gps_none": "Aucune position capturée",
+    "gps_capture": "Capturer",
+    "gps_refresh": "Rafraîchir",
+    "submit": "Signaler l'échec",
+    "submitting": "Enregistrement…",
+    "success_title": "Échec enregistré",
+    "success_body": "Tentative {{attempt}}/3 — statut « {{status}} ». Le vendeur a été notifié.",
+    "success_no_fee": "Aucun frais de re-livraison ne sera facturé (cas exonéré).",
+    "success_abandon_hint": "3 tentatives atteintes — le BL passe en abandon. Contacte ton admin pour la suite (retour ou nouvelle planification).",
+    "errors": {
+      "not_yours": "Ce BL n'est pas assigné à ton compte.",
+      "invalid_status": "Impossible de signaler un échec depuis ce statut.",
+      "max_reached": "3 tentatives déjà enregistrées — passe le BL en retour ou abandon.",
+      "no_profile": "Profil livreur non activé par l'admin.",
+      "not_found": "BL introuvable.",
+      "unauth": "Session expirée — reconnecte-toi.",
+      "photo_too_large": "Photo trop lourde (max 10 Mo).",
+      "generic": "Erreur lors du signalement. Réessaie."
+    }
+  },
+  "creneau": {
+    "matin": "Matin",
+    "matin_hours": "9h-12h",
+    "apres_midi": "Après-midi",
+    "apres_midi_hours": "14h-18h",
+    "soir": "Soir",
+    "soir_hours": "18h-20h"
+  },
+  "profile": {
+    "title": "Profil",
+    "settings": "Paramètres",
+    "language": "Langue",
+    "theme": "Thème",
+    "vehicle": "Véhicule",
+    "logout": "Se déconnecter",
+    "logout_confirm": "Tu es sûr de vouloir te déconnecter ?"
+  },
+  "performance": {
+    "title": "Performance",
+    "subtitle": "Statistiques et score qualité",
+    "today": {
+      "title": "Aujourd'hui",
+      "subtitle": "Tes BL du jour"
+    },
+    "period": {
+      "title": "Sur la période",
+      "preset_7d": "7 jours",
+      "preset_30d": "30 jours",
+      "preset_90d": "90 jours",
+      "days_active_one": "{{count}} jour actif",
+      "days_active_other": "{{count}} jours actifs",
+      "range": "Du {{from}} au {{to}}"
+    },
+    "metric": {
+      "total": "Total",
+      "delivered": "Livrés",
+      "signed": "Signés",
+      "in_progress": "En cours",
+      "remaining": "Restants",
+      "failed": "Échecs",
+      "abandoned": "Abandons",
+      "on_time": "À l'heure",
+      "signature_rate": "Taux signature",
+      "success_rate": "Taux succès",
+      "failure_rate": "Taux échec",
+      "on_time_rate": "Taux ponctualité",
+      "avg_attempts": "Tentatives / échec"
+    },
+    "empty": {
+      "title": "Aucune donnée",
+      "body": "Tes statistiques apparaîtront ici dès tes premières livraisons."
+    },
+    "loading": "Chargement des statistiques…",
+    "errors": {
+      "generic": "Impossible de charger les statistiques.",
+      "unauth": "Tu dois te reconnecter pour voir tes statistiques.",
+      "forbidden": "Tu n'as pas accès aux statistiques d'un autre livreur.",
+      "invalid_period": "La date de début doit être avant la date de fin.",
+      "period_too_long": "La période ne peut pas dépasser 366 jours.",
+      "no_profile": "Profil livreur introuvable."
+    }
+  },
+  "offline": {
+    "banner_title": "Mode hors-ligne",
+    "banner_body": "Tes actions seront envoyées à la reconnexion.",
+    "queued_one": "{{count}} action en attente",
+    "queued_other": "{{count}} actions en attente",
+    "syncing": "Synchronisation en cours…",
+    "synced_one": "{{count}} action synchronisée",
+    "synced_other": "{{count}} actions synchronisées",
+    "sync_failed_one": "{{count}} action n'a pas pu être envoyée",
+    "sync_failed_other": "{{count}} actions n'ont pas pu être envoyées",
+    "queued_action_hint": "Sera envoyée à la reconnexion."
+  },
+  "errors": {
+    "page_not_found": "Page introuvable",
+    "page_not_found_back": "Retourner à l'accueil",
+    "offline": "Tu es hors ligne. Certaines actions seront différées.",
+    "generic": "Une erreur est survenue.",
+    "boundary": {
+      "title": "Quelque chose s'est mal passé",
+      "body": "Une erreur inattendue a interrompu l'écran. Tes données sont sauvegardées côté serveur.",
+      "dev_details": "Détails techniques (dev only)",
+      "home": "Accueil",
+      "reload": "Recharger"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+<!-- ============================================================ -->
+<!-- FORM > Section "Affiche" : chapeau editorial + accroche +     -->
+<!-- modes (promo / expo). Anciens selecteurs (badge/icone/fond)   -->
+<!-- supprimes : le design de l'affiche est desormais fixe.        -->
+<!-- ============================================================ -->
+
+<div class="field">
+  <label for="f-eyebrow">Chapeau editorial <span class="optional">(optionnel)</span></label>
+  <input
+    id="f-eyebrow"
+    name="eyebrow"
+    type="text"
+    maxlength="40"
+    placeholder="Ex. Coup de coeur du moment"
+    autocomplete="off"
+  />
+  <small class="hint">Petit titre servi en haut a gauche, juste avant le nom du produit.</small>
+</div>
+
+<div class="field">
+  <label for="f-pitch">Accroche <span class="optional">(optionnel)</span></label>
+  <input
+    id="f-pitch"
+    name="pitch"
+    type="text"
+    maxlength="120"
+    placeholder="Ex. Piece unique, finition laiton brosse"
+    autocomplete="off"
+  />
+  <small class="hint">Une phrase qui contextualise l'objet. Si vide, on garde la baseline DecoShop.</small>
+</div>
+
+<!-- Mode prix : Plein tarif vs Promotion ------------------------------- -->
+<div class="field">
+  <label class="field__group-label">Mode tarifaire</label>
+  <div class="mode-grid" role="radiogroup" aria-label="Mode tarifaire">
+    <label class="mode-option">
+      <input type="radio" name="promo" value="off" checked />
+      <span class="mode-card">
+        <span class="mode-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        </span>
+        <span class="mode-card__label">Plein tarif</span>
+        <small class="mode-card__hint">Affiche le prix seul, en grand</small>
+      </span>
+    </label>
+    <label class="mode-option">
+      <input type="radio" name="promo" value="on" />
+      <span class="mode-card mode-card--promo">
+        <span class="mode-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+        </span>
+        <span class="mode-card__label">Promotion</span>
+        <small class="mode-card__hint">Ruban PROMO + ancien prix barre</small>
+      </span>
+    </label>
+  </div>
+  <small class="hint">En mode Promotion, renseigne le <em>prix avant promo</em> ci-dessus pour activer la barre rouge et le calcul automatique de la remise.</small>
+</div>
+
+<!-- Mode expo (modele expose) ------------------------------------------ -->
+<div class="field">
+  <label class="checkbox">
+    <input id="f-expo" name="expo" type="checkbox" />
+    <span class="checkbox__box" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </span>
+    <span class="checkbox__label">
+      <strong>Modele d'exposition</strong>
+      <small>Coche si la piece est un modele de demonstration en magasin (badge dedie sur l'affiche).</small>
+    </span>
+  </label>
+</div>

@@ -1,0 +1,400 @@
+{
+  "app": {
+    "name": "ديكوشوب موصّل",
+    "tagline": "توصيل · تولوز"
+  },
+  "common": {
+    "loading": "جارٍ التحميل…",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "validate": "تأكيد",
+    "close": "إغلاق",
+    "retry": "إعادة المحاولة",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "yes": "نعم",
+    "no": "لا",
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "this_week": "هذا الأسبوع",
+    "language": "اللغة",
+    "logout": "تسجيل الخروج",
+    "optional": "اختياري"
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل دخول الموصّل",
+      "subtitle": "ادخل بحساب ديكوشوب الخاص بك",
+      "email": "البريد الإلكتروني",
+      "email_placeholder": "your.email@decoshop-toulouse.fr",
+      "password": "كلمة المرور",
+      "password_placeholder": "كلمة المرور",
+      "submit": "تسجيل الدخول",
+      "submitting": "جارٍ تسجيل الدخول…",
+      "forgot": "نسيت كلمة المرور؟",
+      "errors": {
+        "invalid_credentials": "بريد إلكتروني أو كلمة مرور خاطئة",
+        "network": "لا يوجد اتصال. تحقق من شبكتك.",
+        "unknown": "حدث خطأ. حاول مرة أخرى.",
+        "not_livreur": "هذا الحساب لا يملك صلاحية الموصّل"
+      }
+    },
+    "pin": {
+      "setup_title": "أنشئ رمز PIN",
+      "setup_subtitle": "اختر رمزًا من 4 إلى 6 أرقام لفتح التطبيق بسرعة",
+      "enter_title": "أدخل رمز PIN",
+      "enter_subtitle": "للدخول إلى التطبيق",
+      "confirm_title": "أكّد رمزك",
+      "confirm_subtitle": "أدخله مرة أخرى",
+      "length_hint": "4 إلى 6 أرقام",
+      "mismatch": "الرمزان غير متطابقين. أعد المحاولة.",
+      "incorrect": "رمز غير صحيح",
+      "use_password": "استخدم كلمة المرور بدلًا من ذلك",
+      "errors": {
+        "insecure_context": "يتطلب رمز PIN اتصالاً آمنًا (HTTPS أو localhost). افتح التطبيق عبر https:// أو من localhost.",
+        "insecure_context_hint": "نصيحة للمطوّر: شغّل « npm run dev:https » لتفعيل HTTPS على الشبكة المحلية."
+      }
+    }
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "calendar": "التقويم",
+    "performance": "الإحصائيات",
+    "profile": "الملف"
+  },
+  "home": {
+    "greeting_morning": "صباح الخير",
+    "greeting_afternoon": "مساء الخير",
+    "greeting_evening": "مساء الخير",
+    "today_kpi": {
+      "title": "اليوم",
+      "delivered": "{{count}} موصّل",
+      "delivered_plural": "{{count}} موصّلة",
+      "in_progress": "{{count}} قيد التنفيذ",
+      "remaining": "{{count}} متبقّ",
+      "remaining_plural": "{{count}} متبقّيات",
+      "signature_rate": "التوقيع: {{rate}} %"
+    },
+    "to_deliver": "للتوصيل",
+    "no_deliveries": "لا توجد توصيلات اليوم.",
+    "no_bls_for_creneau": "لا توجد توصيلات في هذه الفترة."
+  },
+  "bl": {
+    "status": {
+      "cree": "أُنشئ",
+      "assigne": "مُسنَد",
+      "confirme": "مؤكَّد",
+      "release_demandee": "طلب مُرسَل",
+      "bloque": "محظور",
+      "en_livraison": "قيد التوصيل",
+      "en_route": "في الطريق",
+      "livre": "مُسلَّم",
+      "signature_attendue": "بانتظار التوقيع",
+      "signe": "موقَّع",
+      "signature_expiree": "انتهت صلاحية التوقيع",
+      "echec_T1": "فشل (المحاولة الأولى)",
+      "echec_T2": "فشل (المحاولة الثانية)",
+      "abandon": "مُلغى",
+      "retour_planifie": "إرجاع مخطَّط",
+      "retour_en_cours": "إرجاع جارٍ",
+      "retour_collecte": "تم استرجاعه"
+    },
+    "card": {
+      "items_one": "{{count}} عنصر",
+      "items_other": "{{count}} عناصر",
+      "no_address": "العنوان غير مذكور"
+    },
+    "actions": {
+      "details": "عرض التفاصيل",
+      "request_release": "أنا متاح",
+      "release_pending": "تم إرسال الطلب",
+      "release_sent": "تم إرسال الطلب إلى البائع",
+      "release_failed": "فشل الطلب",
+      "open_map": "المسار",
+      "call_client": "اتصال",
+      "sms_client": "رسالة",
+      "back": "رجوع"
+    },
+    "detail": {
+      "client": "العميل",
+      "address": "العنوان",
+      "address_complement": "تفاصيل الوصول",
+      "floor": "الطابق",
+      "elevator": "المصعد",
+      "elevator_yes": "نعم",
+      "elevator_no": "لا",
+      "door_code": "رمز الباب",
+      "phone": "الهاتف",
+      "articles": "العناصر",
+      "fragile": "قابل للكسر",
+      "no_articles": "لا توجد عناصر",
+      "creneau": "الفترة",
+      "amount": "المبلغ",
+      "order": "الطلب",
+      "attempts": "محاولات",
+      "redelivery_fee": "رسوم إعادة التوصيل",
+      "open_in_maps": "فتح في الخرائط",
+      "loading": "جارٍ تحميل أمر التوصيل…",
+      "not_found": "أمر التوصيل غير موجود",
+      "back_home": "العودة إلى الرئيسية"
+    },
+    "timeline": {
+      "title": "التتبّع",
+      "step_assigne": "مُسنَد",
+      "step_confirme": "مؤكَّد",
+      "step_en_route": "في الطريق",
+      "step_livre": "مُسلَّم",
+      "step_signe": "موقَّع"
+    },
+    "workflow": {
+      "title": "الإجراءات",
+      "start_delivery": "ابدأ التوصيل",
+      "starting": "جارٍ البدء…",
+      "arrived": "وصلت",
+      "mark_delivered": "تأكيد التسليم",
+      "delivering": "جارٍ التحديث…",
+      "request_signature": "طلب التوقيع",
+      "report_failure": "الإبلاغ عن فشل",
+      "blocked": "الإجراء غير متاح لهذه الحالة",
+      "confirmation_required": "أكد الإجراء — لا يمكن التراجع عنه.",
+      "confirm": "نعم، تأكيد"
+    },
+    "gps": {
+      "starting": "تشغيل GPS…",
+      "active": "GPS نشط",
+      "denied": "تم رفض تحديد الموقع",
+      "denied_hint": "اسمح بتحديد الموقع في إعدادات المتصفح لتفعيل التتبع.",
+      "unavailable": "GPS غير متاح",
+      "accuracy": "الدقة: {{m}} م"
+    }
+  },
+  "map": {
+    "missing_token": "Mapbox غير مُهيأ",
+    "missing_token_hint": "حدّد VITE_MAPBOX_TOKEN في .env.local لتفعيل الخريطة.",
+    "no_coords": "إحداثيات GPS غير محددة لهذا العميل",
+    "loading": "جارٍ تحميل الخريطة…",
+    "open_in_google_maps": "افتح في Google Maps"
+  },
+  "signature": {
+    "draw_here": "وقّع هنا",
+    "clear": "مسح",
+    "modal_title": "التوقيع الإلكتروني",
+    "method_canvas": "التوقيع هنا (على هاتفك)",
+    "method_link": "إرسال رابط للعميل",
+    "method_canvas_hint": "يوقّع العميل مباشرة على هاتفك.",
+    "method_link_hint": "إنشاء رابط صالح 10 دقائق — للمشاركة عبر رسالة أو بريد أو QR.",
+    "request": "طلب التوقيع",
+    "requesting": "جارٍ إنشاء الرابط…",
+    "request_again": "تجديد الرابط",
+    "expires_in": "ينتهي خلال {{time}}",
+    "expired": "انتهت صلاحية الرابط",
+    "expired_hint": "انتهت صلاحية رابط التوقيع. يمكنك إنشاء رابط جديد.",
+    "share_link": "مشاركة الرابط",
+    "email_sent": "تمّ إرسال البريد إلى {{email}}",
+    "email_recipient": "مُستلم البريد",
+    "share_label": "توقيع DecoShop · BL {{numero}}",
+    "share_text": "مرحبًا، إليك رابط توقيع أمر التسليم DecoShop: {{url}} (صالح 10 دقائق).",
+    "copy_link": "نسخ",
+    "copied": "تم النسخ!",
+    "scan_qr": "امسح هذا الرمز QR لفتح الرابط",
+    "submit": "تأكيد التوقيع",
+    "submitting": "جارٍ الحفظ…",
+    "signed_ok": "تم تسجيل التوقيع",
+    "signed_at": "وُقِّع في {{date}}",
+    "signed_thanks": "شكرًا! تم تأكيد التسليم.",
+    "parent_toggle": "وقّع بدل العميل (قاصر)",
+    "parent_name_label": "الاسم الكامل للموقّع",
+    "parent_name_placeholder": "مثال: مريم العلوي",
+    "parent_link_label": "الصلة بالعميل (والد/وصي…)",
+    "parent_link_placeholder": "والد، زوج، وصي…",
+    "public": {
+      "title": "توقيع التسليم",
+      "subtitle": "DecoShop Toulouse — استلام أمر التسليم",
+      "bl_label": "أمر التسليم",
+      "client_label": "المستلم",
+      "amount_label": "المبلغ شامل الضريبة",
+      "delivery_label": "طريقة التسليم",
+      "delivery_home": "التسليم إلى المنزل",
+      "delivery_pickup": "الاستلام من المتجر",
+      "creneau_label": "الفترة",
+      "delivery_date_label": "التاريخ المرتقب",
+      "articles_label": "الأغراض",
+      "articles_count": "{{count}} عنصر",
+      "articles_count_plural": "{{count}} عناصر",
+      "consent": "بالتوقيع، أؤكد أنني استلمت التسليم الموصوف أعلاه بحالة جيدة.",
+      "loading": "جارٍ التحقق من الرابط…",
+      "expired_title": "انتهت صلاحية الرابط",
+      "expired_body": "انتهت صلاحية رابط التوقيع. اطلب من الموصّل توليد رابط جديد.",
+      "not_found_title": "رابط غير صالح",
+      "not_found_body": "رابط التوقيع غير موجود أو لم يعد متاحًا.",
+      "already_signed_title": "تم التوقيع مسبقًا",
+      "already_signed_body": "تم توقيع هذا التسليم من قبل — شكرًا لك!",
+      "powered_by": "توقيع آمن · DecoShop Toulouse"
+    },
+    "errors": {
+      "expired": "انتهت صلاحية الرابط.",
+      "already_signed": "تم توقيع أمر التسليم من قبل.",
+      "not_found": "رابط التوقيع غير موجود.",
+      "invalid_data": "توقيع غير صالح — يرجى التوقيع من جديد.",
+      "no_client_email": "لا يوجد بريد إلكتروني للعميل — أضفه قبل توليد الرابط.",
+      "bl_not_yours": "أمر التسليم هذا ليس مسندًا إلى حسابك.",
+      "bl_invalid_status": "يجب تحديد أمر التسليم على أنه « مُسَلَّم » قبل طلب التوقيع.",
+      "forbidden": "إجراء محجوز للمسؤول / البائع.",
+      "already_signed_cannot_invalidate": "تم توقيع هذا التوقيع بالفعل — لا يمكن تعديله.",
+      "email_send_failed": "تمّ إنشاء الرابط، لكن فشل إرسال البريد. شارك الرابط يدويًا.",
+      "generic": "خطأ أثناء الإرسال. حاول مجددًا."
+    }
+  },
+  "workflow": {
+    "errors": {
+      "not_yours": "أمر التسليم هذا ليس مسندًا إلى حسابك.",
+      "invalid_transition": "انتقال الحالة غير مسموح به في هذه المرحلة.",
+      "no_profile": "لم يفعّل المسؤول حساب الموصّل بعد.",
+      "not_found": "أمر التسليم غير موجود. ربّما تمّ حذفه.",
+      "unauth": "انتهت الجلسة — أعد تسجيل الدخول.",
+      "generic": "تعذّر تحديث الحالة. حاول مجددًا."
+    }
+  },
+  "failure": {
+    "modal_title": "الإبلاغ عن فشل",
+    "intro": "اختر السبب. الأسباب الخارجة عن العميل بدون رسوم.",
+    "reason_label": "سبب الفشل",
+    "reasons": {
+      "client_absent": "العميل غائب",
+      "client_refuse": "العميل يرفض التسليم",
+      "adresse_introuvable": "العنوان غير موجود",
+      "articles_endommages": "الأغراض تالفة",
+      "colis_perdu": "الطرد مفقود",
+      "meteo": "أحوال جوية سيّئة",
+      "panne_vehicule": "عطل في المركبة",
+      "autre": "سبب آخر"
+    },
+    "reasons_hint": {
+      "client_absent": "لا أحد في العنوان بعد محاولة الاتصال.",
+      "client_refuse": "العميل يرفض التسليم دون سبب وجيه.",
+      "adresse_introuvable": "عنوان غير صحيح أو غير قابل للوصول.",
+      "articles_endommages": "أغراض تالفة — إرجاع للورشة.",
+      "colis_perdu": "الطرد غير موجود عند الانطلاق أو فُقد في الطريق.",
+      "meteo": "أحوال جوية تجعل التوصيل غير آمن.",
+      "panne_vehicule": "عطل في المركبة — تأجيل التوصيل.",
+      "autre": "وضّح في التعليق."
+    },
+    "no_fee": "بدون رسوم",
+    "no_fee_explain": "حالة معفاة — لن تُفرض رسوم إعادة التوصيل على العميل.",
+    "comment_label": "تعليق",
+    "comment_placeholder": "اذكر السياق (أجراس، جار، الطابق…)",
+    "photo_label": "صورة الحالة",
+    "photo_pick": "التقط صورة",
+    "photo_alt": "صورة الحالة",
+    "gps_label": "موقع GPS",
+    "gps_none": "لا يوجد موقع مسجّل",
+    "gps_capture": "تسجيل",
+    "gps_refresh": "تحديث",
+    "submit": "أبلِغ عن الفشل",
+    "submitting": "جارٍ الحفظ…",
+    "success_title": "تم تسجيل الفشل",
+    "success_body": "المحاولة {{attempt}}/3 — الحالة « {{status}} ». تم إشعار البائع.",
+    "success_no_fee": "لن تُفرض رسوم إعادة التوصيل (حالة معفاة).",
+    "success_abandon_hint": "تم الوصول إلى 3 محاولات — ينتقل أمر التسليم إلى ملغى. تواصل مع المسؤول للإجراء التالي.",
+    "errors": {
+      "not_yours": "أمر التسليم هذا ليس مسندًا إلى حسابك.",
+      "invalid_status": "لا يمكن الإبلاغ عن فشل من هذه الحالة.",
+      "max_reached": "تم تسجيل 3 محاولات بالفعل — أدخله في إرجاع أو إلغاء.",
+      "no_profile": "حساب الموصّل غير مُفعّل.",
+      "not_found": "أمر التسليم غير موجود.",
+      "unauth": "انتهت الجلسة — أعد تسجيل الدخول.",
+      "photo_too_large": "الصورة كبيرة جدًّا (10 م.ح. كحد أقصى).",
+      "generic": "خطأ أثناء الإبلاغ. حاول مجددًا."
+    }
+  },
+  "creneau": {
+    "matin": "صباحًا",
+    "matin_hours": "9-12",
+    "apres_midi": "بعد الظهر",
+    "apres_midi_hours": "14-18",
+    "soir": "مساءً",
+    "soir_hours": "18-20"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "vehicle": "المركبة",
+    "logout": "تسجيل الخروج",
+    "logout_confirm": "هل أنت متأكد من تسجيل الخروج؟"
+  },
+  "performance": {
+    "title": "الأداء",
+    "subtitle": "الإحصائيات ودرجة الجودة",
+    "today": {
+      "title": "اليوم",
+      "subtitle": "إيصالات اليوم"
+    },
+    "period": {
+      "title": "خلال الفترة",
+      "preset_7d": "٧ أيام",
+      "preset_30d": "٣٠ يومًا",
+      "preset_90d": "٩٠ يومًا",
+      "days_active_one": "يوم نشاط واحد",
+      "days_active_other": "{{count}} أيام نشاط",
+      "range": "من {{from}} إلى {{to}}"
+    },
+    "metric": {
+      "total": "الإجمالي",
+      "delivered": "تمّ التسليم",
+      "signed": "موقّعة",
+      "in_progress": "قيد التنفيذ",
+      "remaining": "المتبقّي",
+      "failed": "إخفاقات",
+      "abandoned": "تخلٍّ",
+      "on_time": "في الوقت",
+      "signature_rate": "نسبة التوقيع",
+      "success_rate": "نسبة النجاح",
+      "failure_rate": "نسبة الإخفاق",
+      "on_time_rate": "نسبة الالتزام بالوقت",
+      "avg_attempts": "محاولات لكل إخفاق"
+    },
+    "empty": {
+      "title": "لا توجد بيانات",
+      "body": "ستظهر إحصائياتك هنا بعد أوّل عمليات التسليم."
+    },
+    "loading": "جاري تحميل الإحصائيات…",
+    "errors": {
+      "generic": "تعذّر تحميل الإحصائيات.",
+      "unauth": "يجب إعادة تسجيل الدخول لعرض إحصائياتك.",
+      "forbidden": "ليس لديك صلاحية للاطّلاع على إحصائيات سائق آخر.",
+      "invalid_period": "يجب أن يكون تاريخ البداية قبل تاريخ النهاية.",
+      "period_too_long": "لا يمكن أن تتجاوز الفترة ٣٦٦ يومًا.",
+      "no_profile": "ملف السائق غير موجود."
+    }
+  },
+  "offline": {
+    "banner_title": "وضع عدم الاتصال",
+    "banner_body": "ستُرسَل إجراءاتك عند عودة الاتصال.",
+    "queued_one": "إجراء واحد في الانتظار",
+    "queued_other": "{{count}} إجراءات في الانتظار",
+    "syncing": "جارٍ المزامنة…",
+    "synced_one": "تمت مزامنة إجراء واحد",
+    "synced_other": "تمت مزامنة {{count}} إجراءات",
+    "sync_failed_one": "تعذّر إرسال إجراء واحد",
+    "sync_failed_other": "تعذّر إرسال {{count}} إجراءات",
+    "queued_action_hint": "ستُرسَل عند عودة الاتصال."
+  },
+  "errors": {
+    "page_not_found": "الصفحة غير موجودة",
+    "page_not_found_back": "العودة إلى الرئيسية",
+    "offline": "أنت غير متصل. ستُؤجّل بعض الإجراءات.",
+    "generic": "حدث خطأ.",
+    "boundary": {
+      "title": "حدث خلل غير متوقّع",
+      "body": "تمّ إيقاف الشاشة بسبب خطأ. بياناتك محفوظة على الخادم.",
+      "dev_details": "تفاصيل تقنية (وضع التطوير)",
+      "home": "الرئيسية",
+      "reload": "إعادة التحميل"
+    }
+  }
+}

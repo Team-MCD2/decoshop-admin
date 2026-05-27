@@ -1,0 +1,48 @@
+# =============================================================
+# Manifest Shopify CLI - DecoShop Affiches
+# -------------------------------------------------------------
+# Lis https://shopify.dev/docs/apps/tools/cli/configuration
+# Apres `shopify app config link`, le CLI remplit `client_id`
+# et synchronise application_url + auth.redirect_urls a chaque
+# `shopify app dev` (tunnel Cloudflare).
+# =============================================================
+
+name = "decoshop-affiches"
+handle = "decoshop-affiches"
+
+# Rempli par `shopify app config link`. Ne PAS commit la valeur
+# en clair une fois l'app creee cote Partners.
+client_id = ""
+
+# URL publique d'acces a l'app. En dev, le CLI met a jour cette
+# valeur automatiquement avec son tunnel Cloudflare.
+application_url = "https://example.com"
+
+# App embedded -> le frontend tourne dans une iframe du admin
+# Shopify et utilise App Bridge pour communiquer.
+embedded = true
+
+[access_scopes]
+# Scopes minimaux : lecture du catalogue produit pour le picker.
+# Ajouter "read_files" plus tard si on veut piocher des images.
+scopes = "read_products"
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = [
+  "https://example.com/api/auth",
+  "https://example.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-10"
+
+[pos]
+embedded = false
+
+[build]
+# Le CLI met a jour automatiquement application_url et redirect_urls
+# au demarrage de `shopify app dev` pour pointer sur le tunnel.
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
+dev_store_url = "decoshop311.myshopify.com"

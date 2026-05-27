@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="DecoShop Toulouse">
+  <defs>
+    <clipPath id="c"><circle cx="100" cy="100" r="95"/></clipPath>
+  </defs>
+  <circle cx="100" cy="100" r="95" fill="#1E3A8A"/>
+  <g clip-path="url(#c)" font-family="'Playfair Display', 'DM Sans', Arial, sans-serif" font-weight="900" fill="#FACC15" text-anchor="middle">
+    <text x="100" y="92" font-size="44" letter-spacing="1">DECO</text>
+    <text x="100" y="138" font-size="44" letter-spacing="1">SHOP</text>
+  </g>
+  <circle cx="100" cy="100" r="93" fill="none" stroke="#FACC15" stroke-width="1.5" opacity=".25"/>
+</svg>

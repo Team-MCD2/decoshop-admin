@@ -1,0 +1,14 @@
+# =============================================================
+# Composant "web" du projet Shopify - DecoShop Affiches
+# -------------------------------------------------------------
+# Indique au CLI comment lancer le serveur en dev. Le CLI
+# injecte HOST, SHOPIFY_API_KEY, SHOPIFY_API_SECRET, SCOPES
+# et PORT dans l'environnement avant d'executer la commande.
+# =============================================================
+
+name = "decoshop-affiches-web"
+roles = ["frontend", "backend"]
+type = "node"
+
+[commands]
+dev = "npm run shopify:dev"

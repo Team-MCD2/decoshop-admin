@@ -1,0 +1,131 @@
+<!-- ============================================================ -->
+<!-- FORM > Section "Produit" : nom, reference, prix             -->
+<!-- ============================================================ -->
+
+<div class="field">
+  <label for="f-name">Nom du produit <span class="required">*</span></label>
+  <input
+    id="f-name"
+    name="name"
+    type="text"
+    required
+    maxlength="80"
+    placeholder="Ex. Lanterne marocaine en laiton"
+    autocomplete="off"
+  />
+  <small class="hint">Max 80 caracteres. Tient sur 2 lignes.</small>
+</div>
+
+<div class="field">
+  <label for="f-ref">Reference / SKU <span class="optional">(optionnel)</span></label>
+  <input
+    id="f-ref"
+    name="ref"
+    type="text"
+    maxlength="20"
+    placeholder="Ex. LM-1042"
+    autocomplete="off"
+  />
+</div>
+
+<!-- ============================================================
+     PICKER PRODUIT SHOPIFY
+     - state="loading"  : boot, on attend /api/shopify/status
+     - state="idle"     : Shopify OK, champ recherche visible
+     - state="selected" : un produit est choisi (chip + URL)
+     - state="manual"   : Shopify indispo OU bascule manuelle, champ URL
+     L'URL choisie alimente toujours l'input hidden #f-product-url
+     pour conserver le contrat avec app.js (champ productUrl).
+     ============================================================ -->
+<div class="field picker" data-shopify-picker data-state="loading">
+  <label for="f-product-search">Produit Shopify <span class="optional">(optionnel)</span></label>
+
+  <!-- ETAT loading : juste un placeholder discret le temps du status -->
+  <div class="picker__loading" data-picker-loading>
+    <span class="picker__spinner" aria-hidden="true"></span>
+    <span>Connexion a Shopify...</span>
+  </div>
+
+  <!-- ETAT idle : barre de recherche + dropdown de resultats -->
+  <div class="picker__search" data-picker-search>
+    <div class="picker__input-wrap">
+      <svg class="picker__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input
+        id="f-product-search"
+        type="search"
+        class="picker__input"
+        placeholder="Rechercher un produit (titre ou SKU)..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+    <ul class="picker__results" data-picker-results role="listbox" aria-label="Produits Shopify"></ul>
+  </div>
+
+  <!-- ETAT selected : chip du produit choisi + bouton changer -->
+  <div class="picker__chip" data-picker-chip>
+    <img class="picker__chip-img" data-picker-chip-img alt="" />
+    <div class="picker__chip-text">
+      <strong data-picker-chip-title>Produit selectionne</strong>
+      <span data-picker-chip-meta></span>
+    </div>
+    <button type="button" class="picker__chip-clear" data-picker-clear aria-label="Changer de produit">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <span>Changer</span>
+    </button>
+  </div>
+
+  <!-- ETAT manual : champ URL libre (fallback ou choix utilisateur) -->
+  <div class="picker__manual" data-picker-manual>
+    <input
+      id="f-product-url-manual"
+      type="url"
+      class="picker__manual-input"
+      placeholder="https://decoshop311.myshopify.com/products/lanterne-laiton"
+      autocomplete="off"
+      inputmode="url"
+    />
+  </div>
+
+  <!-- Footer : statut connexion + bouton bascule manual / picker -->
+  <small class="hint picker__hint">
+    <span data-picker-status>Le QR code sera genere a partir de l'URL produit.</span>
+    <button type="button" class="picker__toggle" data-picker-toggle></button>
+  </small>
+
+  <!-- Stockage reel de l'URL produit (lue par app.js => readForm) -->
+  <input
+    id="f-product-url"
+    name="productUrl"
+    type="hidden"
+    value=""
+  />
+</div>
+
+<div class="field-row">
+  <div class="field">
+    <label for="f-price">Prix actuel (€) <span class="required">*</span></label>
+    <input
+      id="f-price"
+      name="price"
+      type="number"
+      required
+      min="0"
+      step="0.01"
+      placeholder="59"
+      inputmode="decimal"
+    />
+  </div>
+  <div class="field">
+    <label for="f-old">Prix avant promo (€) <span class="optional">(optionnel)</span></label>
+    <input
+      id="f-old"
+      name="oldPrice"
+      type="number"
+      min="0"
+      step="0.01"
+      placeholder="89"
+      inputmode="decimal"
+    />
+  </div>
+</div>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" aria-hidden="true">
+  <circle cx="100" cy="100" r="95" fill="#1E3A8A"/>
+  <g font-family="'Playfair Display', Arial, sans-serif" font-weight="900" fill="#FACC15" text-anchor="middle">
+    <text x="100" y="115" font-size="60" letter-spacing="2">DS</text>
+  </g>
+</svg>

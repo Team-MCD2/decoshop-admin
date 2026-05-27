@@ -1,0 +1,17 @@
+<!-- COLONNE 2 : APERCU A4 PAYSAGE (= ce qui s'imprime) -->
+<section class="panel panel--preview" aria-label="Apercu de l'affiche">
+  <h2 class="panel__title">2. Apercu A4 paysage</h2>
+
+  <!-- preview-wrap garde le ratio 297:210, le poster est mis a l'echelle
+       en JS pour tenir dans la largeur disponible. A l'impression on
+       restaure la taille reelle. -->
+  <div class="preview-wrap" id="previewWrap">
+    <article id="livePoster" class="poster" data-promo="false" data-expo="false">
+      <!-- Genere via JS depuis #posterTemplate -->
+    </article>
+  </div>
+
+  <p class="panel__hint">
+    L'apercu reflete exactement ce qui sera imprime (A4 paysage, 297 × 210 mm).
+  </p>
+</section>

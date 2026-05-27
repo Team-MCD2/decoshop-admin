@@ -1,0 +1,80 @@
+<!-- ============================================================
+     AFFICHE A4 PAYSAGE — DecoShop
+     Template clone par JS (id 'posterTemplate' -> #livePoster).
+     Modes : data-promo="true" / data-expo="true" sur .poster
+     pilotent l'affichage du ruban PROMO et du badge EXPO.
+     ============================================================ -->
+<template id="posterTemplate">
+  <article class="poster" data-promo="false" data-expo="false">
+
+    <!-- TOP BAR : marque a gauche, badge EXPO a droite (si data-expo="true") -->
+    <header class="poster__top">
+      <div class="poster__expo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 3h20v14H2z"/><path d="M8 21h8"/><path d="M12 17v4"/>
+        </svg>
+        <span>Modele d'exposition</span>
+      </div>
+    </header>
+
+    <!-- MAIN : 60% editorial / 40% bloc prix jaune -->
+    <main class="poster__main">
+
+      <!-- Bloc de gauche : editorial en haut, module QR ancre en bas -->
+      <section class="poster__content">
+
+        <!-- Editorial : chapeau + nom + reference + accroche -->
+        <div class="poster__content-top">
+          <span class="poster__eyebrow" data-eyebrow>Coup de coeur</span>
+          <h1 class="poster__name" data-name>Nom du produit</h1>
+          <div class="poster__ref" data-ref></div>
+          <div class="poster__pitch" data-pitch>Decouvrez nos nouveautes en magasin a Toulouse.</div>
+        </div>
+
+        <!-- Module QR : pousse en bas via flex space-between -->
+        <div class="poster__qr" data-qr-module>
+          <div class="poster__qr-code" data-qr>
+            <!-- Image QR injectee par JS si URL produit fournie -->
+          </div>
+          <div class="poster__qr-label">
+            <strong>Scanner pour la fiche produit</strong>
+            <span>DecoShop Toulouse · Disponible en ligne</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Bloc de droite : prix hero (jaune) + ruban promo si data-promo -->
+      <aside class="poster__price-block">
+        <span class="poster__promo-ribbon" aria-hidden="true">Promo</span>
+        <span class="poster__discount" data-discount aria-hidden="true"></span>
+        <div class="poster__old">
+          <span data-old>0</span>
+          <span class="poster__old-currency">€</span>
+        </div>
+        <div class="poster__price">
+          <span class="poster__price-integer" data-price-int>0</span>
+          <span class="poster__price-decimal" data-price-dec></span>
+          <span class="poster__price-currency">€</span>
+        </div>
+        <span class="poster__price-label">Prix TTC</span>
+      </aside>
+
+      <!-- Element graphique : coin jaune diagonal qui mord le contenu -->
+      <span class="poster__corner" aria-hidden="true"></span>
+    </main>
+
+    <!-- BOTTOM BAR : statut produit (gauche) + tagline / adresse (droite) -->
+    <footer class="poster__bottom">
+      <span class="poster__bottom-left">
+        <span class="poster__bottom-mode" data-mode>En magasin</span>
+      </span>
+      <span class="poster__bottom-right">
+        DecoShop Toulouse
+        <span class="poster__sep">·</span>
+        Le mobilier qui vous ressemble
+      </span>
+    </footer>
+
+  </article>
+</template>
