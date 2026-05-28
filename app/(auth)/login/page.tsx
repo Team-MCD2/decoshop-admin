@@ -19,6 +19,17 @@ function LoginForm() {
   const supabase = createClient()
 
   useEffect(() => {
+    // Intercept invite/recovery tokens in URL hash and redirect drivers to the Livreur PWA
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const hash = window.location.hash
+      if (hash.includes('access_token=') && (hash.includes('type=invite') || hash.includes('type=recovery'))) {
+        const isLocal = window.location.hostname === 'localhost'
+        const targetOrigin = isLocal ? 'http://localhost:5173' : 'https://decoshop-livreur.vercel.app'
+        window.location.href = `${targetOrigin}/reset-password${hash}`
+        return
+      }
+    }
+
     const errorParam = searchParams.get('error')
     if (errorParam === 'access_denied') {
       setError("Accès refusé. Compte inactif ou rôle non autorisé.")

@@ -21,7 +21,8 @@ import {
   ChevronRight,
   Award,
   Zap,
-  Crown
+  Crown,
+  Copy
 } from 'lucide-react'
 import { useI18n } from '@/lib/i18n'
 
@@ -123,8 +124,8 @@ export default function LivreursClient({ initialDrivers }: { initialDrivers: any
     const res = await inviteDriverAction(inviteEmail, inviteNom, invitePrenom, invitePhone)
     setSubmitting(false)
     if (res.success) {
-      alert('Livreur invité avec succès !')
       setInviteOpen(false)
+      alert('Livreur invité avec succès ! Un e-mail d\'invitation lui a été envoyé.')
     } else {
       alert(`Erreur : ${res.error}`)
     }
