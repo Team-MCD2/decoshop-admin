@@ -45,6 +45,7 @@ export interface ShopifyOrder {
   line_items: ShopifyLineItem[];
   fulfillments: ShopifyFulfillment[];
   shipping_address: ShopifyAddress | null;
+  billing_address?: ShopifyAddress | null;
   customer: {
     id: number;
     first_name: string;
@@ -79,8 +80,8 @@ export interface UpdateTrackingPayload {
   notify_customer?: boolean;
 }
 
-const SHOPIFY_STORE_URL = process.env.SHOPIFY_STORE_URL ?? '';
-const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN ?? '';
+const SHOPIFY_STORE_URL = process.env.SHOPIFY_STORE_URL ?? process.env.SHOPIFY_SHOP ?? '';
+const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN ?? process.env.SHOPIFY_ADMIN_TOKEN ?? '';
 const API_VERSION = '2024-10';
 
 /** Vérifie que la config Shopify est présente et valide */

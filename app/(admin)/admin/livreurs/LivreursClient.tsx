@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { inviteDriverAction, updateDriverAction, deleteDriverAction } from './actions'
+import { inviteDriverAction, updateDriverAction, deleteDriverAction, resetDriverPasswordAction } from './actions'
 import {
   Search,
   Plus,
@@ -770,21 +770,43 @@ export default function LivreursClient({ initialDrivers }: { initialDrivers: any
                 )}
               </div>
 
-              <div className="pt-3 border-t border-navy-50 flex justify-end gap-2">
+              <div className="pt-3 border-t border-navy-50 flex justify-between gap-2">
                 <button
                   type="button"
-                  onClick={() => setEditOpen(false)}
-                  className="rounded-xl border border-navy-100 hover:bg-navy-50 px-4 py-2 font-bold text-navy"
+                  onClick={async () => {
+                    if (window.confirm(`Envoyer un e-mail de réinitialisation de mot de passe à ${selectedDriver.email} ?`)) {
+                      setSubmitting(true)
+                      const res = await resetDriverPasswordAction(selectedDriver.email)
+                      setSubmitting(false)
+                      if (res.success) {
+                        alert('E-mail de réinitialisation envoyé avec succès !')
+                      } else {
+                        alert(`Erreur : ${res.error}`)
+                      }
+                    }
+                  }}
+                  disabled={submitting || !selectedDriver.email}
+                  className="rounded-xl border border-yellow bg-yellow/5 hover:bg-yellow text-navy px-4 py-2 font-bold transition-all disabled:opacity-50"
                 >
-                  Annuler
+                  Réinitialiser mot de passe
                 </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="rounded-xl bg-navy hover:bg-navy-700 text-white font-bold px-4 py-2 disabled:opacity-50"
-                >
-                  {submitting ? 'Enregistrement...' : 'Enregistrer'}
-                </button>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditOpen(false)}
+                    className="rounded-xl border border-navy-100 hover:bg-navy-50 px-4 py-2 font-bold text-navy"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="rounded-xl bg-navy hover:bg-navy-700 text-white font-bold px-4 py-2 disabled:opacity-50"
+                  >
+                    {submitting ? 'Enregistrement...' : 'Enregistrer'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

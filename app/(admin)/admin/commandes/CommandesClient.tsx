@@ -18,6 +18,7 @@ import {
   Plus
 } from 'lucide-react'
 import OrderDetailPanel from '../../_components/OrderDetailPanel'
+import { syncShopifyOrdersAction } from './actions'
 
 type StatusFilter = 'all' | 'unfulfilled' | 'in_progress' | 'fulfilled'
 type SortKey = 'name' | 'date' | 'amount' | 'status'
@@ -41,6 +42,26 @@ export default function CommandesClient({ initialOrders }: { initialOrders: any[
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkLoading, setBulkLoading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+
+  // Shopify sync manual handler
+  const handleShopifySync = async () => {
+    setSyncing(true)
+    try {
+      const res = await syncShopifyOrdersAction()
+      if (res.success) {
+        alert(`Synchronisation terminée avec succès ! Commandes traitées : ${res.processed}, Commande(s) synchronisée(s) : ${res.synced}/${res.processed}.`)
+        handleRefresh()
+      } else {
+        alert(res.error || "Une erreur est survenue lors de la synchronisation.")
+      }
+    } catch (e) {
+      console.error('[shopify-sync] Client handler exception', e)
+      alert("Impossible de contacter le serveur de synchronisation.")
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   // Detail panel state
   const [detailOrder, setDetailOrder] = useState<any | null>(null)
@@ -383,10 +404,21 @@ export default function CommandesClient({ initialOrders }: { initialOrders: any[
         </div>
         
         <div className="flex items-center gap-2 w-full sm:w-auto">
+          {/* Shopify Sync Button */}
+          <button
+            onClick={handleShopifySync}
+            disabled={syncing}
+            className="rounded-xl bg-yellow hover:bg-yellow-600 text-navy font-bold px-4 py-2.5 text-xs transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50 mr-1"
+            title="Synchroniser avec Shopify"
+          >
+            <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+            {syncing ? 'Synchronisation...' : 'Synchroniser Shopify'}
+          </button>
+
           {/* Refresh Button */}
           <button
             onClick={handleRefresh}
-            disabled={refreshing}
+            disabled={refreshing || syncing}
             className="rounded-xl border border-navy-200 p-2.5 bg-white text-navy hover:bg-navy-50 disabled:opacity-50 transition-colors shadow-sm"
             title="Rafraîchir"
           >

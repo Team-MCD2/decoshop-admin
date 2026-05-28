@@ -14,7 +14,8 @@ import {
   UserCheck,
   Building,
   Calendar,
-  X
+  X,
+  Mail
 } from 'lucide-react'
 
 export default function SignClient({
@@ -43,6 +44,7 @@ export default function SignClient({
   const [isParent, setIsParent] = useState(false)
   const [parentNom, setParentNom] = useState('')
   const [parentLien, setParentLien] = useState('')
+  const [emailClient, setEmailClient] = useState('')
 
   // Layout setup
   const setupCanvas = () => {
@@ -120,6 +122,10 @@ export default function SignClient({
     e.preventDefault()
     const canvas = canvasRef.current
     if (!canvas || !hasInk) return
+    if (!emailClient.trim()) {
+      alert(t('signature.errors.email_required', 'Veuillez saisir votre adresse email de vérification.'))
+      return
+    }
     if (isParent && !parentNom) {
       alert(t('signature.errors.invalid_data', 'Veuillez saisir le nom de la personne signataire.'))
       return
@@ -131,6 +137,7 @@ export default function SignClient({
       const { data, error } = await supabase.rpc('submit_signature', {
         p_token: token,
         p_signature_data: dataUrl,
+        p_email_client: emailClient.trim(),
         p_signe_par_parent: isParent,
         p_parent_nom: isParent ? parentNom : null,
         p_parent_lien: isParent ? parentLien : null,
@@ -294,6 +301,22 @@ export default function SignClient({
                     </div>
                   </div>
                 )}
+              </div>
+
+              {/* Email verification input */}
+              <div className="space-y-1 text-xs">
+                <label className="font-bold text-navy flex items-center gap-1">
+                  <Mail className="w-4 h-4 text-navy-500" />
+                  <span>{t('signature.email_verification_label', 'Email de commande pour vérification')} *</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={emailClient}
+                  onChange={(e) => setEmailClient(e.target.value)}
+                  placeholder={t('signature.email_verification_placeholder', 'Saisissez l\'email associé à la commande')}
+                  className="w-full rounded-xl border border-slate-200 bg-white p-2.5 outline-none focus:ring-1 focus:ring-yellow"
+                />
               </div>
 
               {/* Canvas drawing area */}

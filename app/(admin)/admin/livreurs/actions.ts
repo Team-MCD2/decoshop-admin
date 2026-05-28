@@ -101,3 +101,23 @@ export async function deleteDriverAction(id: string) {
     return { success: false, error: err.message || 'Une erreur inconnue est survenue' }
   }
 }
+
+// Send password reset link to driver
+export async function resetDriverPasswordAction(email: string) {
+  try {
+    const supabaseAdmin = createAdminClient()
+    const redirectUrl = (process.env.NEXT_PUBLIC_LIVREUR_URL || 'http://localhost:5173') + '/reset-password'
+    
+    const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl
+    })
+
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    return { success: true }
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Une erreur inconnue est survenue' }
+  }
+}
