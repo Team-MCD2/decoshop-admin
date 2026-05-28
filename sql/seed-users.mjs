@@ -63,6 +63,16 @@ const USERS = [
       preferred_language: 'fr',
     },
   },
+  {
+    email: 'superadmin@decoshop-toulouse.fr',
+    password: 'SuperAdmin1234!',
+    user_metadata: {
+      nom: 'DECOSHOP',
+      prenom: 'SuperAdmin',
+      telephone: '+33 6 00 00 00 00',
+      preferred_language: 'fr',
+    },
+  },
 ];
 
 // Matching role config for profiles (will be set via SQL after user creation)
@@ -72,6 +82,7 @@ const PROFILE_ROLES = {
   'mehdi@decoshop-toulouse.fr': 'livreur',
   'omar@decoshop-toulouse.fr': 'livreur',
   'fayssal@decoshop-toulouse.fr': 'vendeur_proprietaire',
+  'superadmin@decoshop-toulouse.fr': 'superadmin',
 };
 
 async function adminRequest(method, path, body) {

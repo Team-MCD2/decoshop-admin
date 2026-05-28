@@ -9,7 +9,8 @@ import {
   FileText,
   Users,
   UserCheck,
-  LogOut
+  LogOut,
+  ShieldAlert
 } from 'lucide-react'
 
 export default function AdminSidebar({
@@ -34,6 +35,10 @@ export default function AdminSidebar({
     { name: 'Livreurs', href: '/admin/livreurs', icon: Users },
     { name: 'Clients', href: '/admin/clients', icon: UserCheck },
   ]
+
+  if (profile?.role === 'superadmin') {
+    menuItems.push({ name: 'Superadmin', href: '/admin/superadmin', icon: ShieldAlert })
+  }
 
   return (
     <aside className="w-64 bg-navy text-white flex flex-col justify-between h-full border-r border-navy-900 shrink-0">
