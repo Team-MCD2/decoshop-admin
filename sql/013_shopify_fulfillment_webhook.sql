@@ -21,7 +21,7 @@ begin
     
     -- Perform asynchronous HTTP POST request to Next.js API route
     perform net.http_post(
-      url := 'https://decoshop-admin.vercel.app/api/shopify/sync-fulfillment',
+      url := 'https://decoshop-adminn.vercel.app/api/shopify/sync-fulfillment',
       body := v_payload,
       headers := '{"Content-Type": "application/json"}'::jsonb,
       timeout_ms := 10000

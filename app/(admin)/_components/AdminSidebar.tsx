@@ -91,7 +91,7 @@ export default function AdminSidebar({
       </div>
 
       {/* Footer / Logout */}
-      <div className="p-6 border-t border-navy-700 bg-navy-900/30">
+      <div className="p-6 border-t border-navy-700 bg-navy-900/30 flex flex-col gap-4">
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-200 hover:bg-red-950/30 hover:text-red-400 transition-colors"
@@ -99,6 +99,9 @@ export default function AdminSidebar({
           <LogOut className="w-5 h-5 text-red-300" />
           Déconnexion
         </button>
+        <div className="text-[10px] text-navy-300 text-center font-semibold tracking-wider">
+          Fait avec ♥ par Microdidact
+        </div>
       </div>
     </aside>
   )

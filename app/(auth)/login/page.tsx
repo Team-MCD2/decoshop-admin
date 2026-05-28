@@ -269,6 +269,8 @@ export default function LoginPage() {
           {/* ── Footer ── */}
           <p className="text-center text-[10px] text-muted mt-8 uppercase tracking-wider">
             DECOSHOP &copy; {new Date().getFullYear()} — Connexion Sécurisée
+            <br />
+            <span className="text-[9px] lowercase opacity-60">fait par microdidact</span>
           </p>
         </div>
       </div>

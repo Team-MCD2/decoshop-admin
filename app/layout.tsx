@@ -29,9 +29,9 @@ export const metadata: Metadata = {
   description: "Plateforme unifiée de suivi des commandes Shopify et de gestion des livraisons PWA.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/icons/logo-mark.svg",
-    shortcut: "/icons/logo-mark.svg",
-    apple: "/icons/logo-mark.svg",
+    icon: "/icons/logo.svg",
+    shortcut: "/icons/logo.svg",
+    apple: "/icons/logo.svg",
   },
 };
 
