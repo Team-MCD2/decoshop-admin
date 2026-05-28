@@ -223,23 +223,28 @@ begin
   if p_token is null or length(p_token) <> 64 or p_token !~ '^[0-9a-f]{64}$' then
     raise exception 'INVALID_TOKEN' using errcode = '22023';
   end if;
-
+ 
   select * into v_sig from public.signatures_electroniques where token = p_token;
   if not found then
     raise exception 'TOKEN_NOT_FOUND' using errcode = 'P0002';
   end if;
-
+ 
   select * into v_bl     from public.bons_livraison where id = v_sig.bl_id;
   select * into v_client from public.clients        where id = v_bl.client_id;
-
+ 
   return json_build_object(
     'status',                v_sig.statut::text,
     'is_expired',            v_sig.date_expiration < now(),
     'is_signed',             v_sig.statut = 'signe',
+    'date_signature',        v_sig.date_signature,
+    'signature_data',        v_sig.signature_data,
+    'signe_par_parent',      v_sig.signe_par_parent,
+    'parent_nom',            v_sig.parent_nom,
+    'parent_lien',           v_sig.parent_lien,
     'date_emission',         v_sig.date_emission,
     'date_expiration',       v_sig.date_expiration,
-    'date_signature',        v_sig.date_signature,
     'numero_bl',             v_bl.numero_bl,
+    'numero_commande',       (select numero_commande from public.commandes where id = v_bl.commande_id),
     'montant_total_ttc',     v_bl.montant_total_ttc,
     'mode_livraison',        v_bl.mode_livraison::text,
     'creneau',               v_bl.creneau::text,
@@ -247,11 +252,12 @@ begin
     'client_nom',            v_client.nom,
     'client_prenom',         v_client.prenom,
     'client_ville',          v_client.ville,
-    'articles_count',        (select count(*)::int from public.lignes_bl where bl_id = v_bl.id)
+    'articles_count',        (select count(*)::int from public.lignes_bl where bl_id = v_bl.id),
+    'lignes',                (select coalesce(json_agg(t), '[]'::json) from (select designation, quantite, prix_unitaire_ttc, fragile from public.lignes_bl where bl_id = v_bl.id order by ordre_tri) t)
   );
 end;
 $$;
-
+ 
 revoke all     on function public.get_signature_public(text) from public;
 grant  execute on function public.get_signature_public(text) to anon, authenticated;
 

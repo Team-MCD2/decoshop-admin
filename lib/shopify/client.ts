@@ -220,3 +220,50 @@ export function cancelFulfillment(fulfillmentId: number) {
     `/fulfillments/${fulfillmentId}/cancel.json`,
   );
 }
+
+/** Récupère les emplacements de stock */
+export function getShopifyLocations() {
+  return shopifyFetch<{ locations: { id: number; name: string; active: boolean }[] }>(
+    'GET',
+    '/locations.json',
+  );
+}
+
+/** Crée une commande ferme sur Shopify */
+export function createShopifyOrder(order: any) {
+  return shopifyFetch<{ order: ShopifyOrder }>('POST', '/orders.json', { order });
+}
+
+/** Met à jour la note et les attributs d'une commande */
+export function updateOrderNotesAndAttributes(
+  orderId: string | number,
+  note: string | null,
+  note_attributes: { name: string; value: string }[],
+) {
+  return shopifyFetch<{ order: ShopifyOrder }>('PUT', `/orders/${orderId}.json`, {
+    order: {
+      id: orderId,
+      note,
+      note_attributes,
+    },
+  });
+}
+
+/** Récupère les Fulfillment Orders d'une commande */
+export function getFulfillmentOrders(orderId: string | number) {
+  return shopifyFetch<{ fulfillment_orders: any[] }>(
+    'GET',
+    `/orders/${orderId}/fulfillment_orders.json`,
+  );
+}
+
+/** Crée un fulfillment moderne (via Fulfillment Orders) */
+export function createFulfillmentModern(payload: any) {
+  return shopifyFetch<{ fulfillment: any }>('POST', '/fulfillments.json', payload);
+}
+
+/** Récupère les détails d'une commande unique sur Shopify */
+export function getShopifyOrder(orderId: string | number) {
+  return shopifyFetch<{ order: ShopifyOrder }>('GET', `/orders/${orderId}.json`);
+}
+

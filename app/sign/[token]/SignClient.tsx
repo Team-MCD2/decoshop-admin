@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useI18n } from '@/lib/i18n'
+import { jsPDF } from 'jspdf'
+import autoTable from 'jspdf-autotable'
 import {
   CheckCircle,
   AlertTriangle,
@@ -15,7 +17,8 @@ import {
   Building,
   Calendar,
   X,
-  Mail
+  Mail,
+  Printer
 } from 'lucide-react'
 
 export default function SignClient({
@@ -158,6 +161,103 @@ export default function SignClient({
     }
   }
 
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+    const now = new Date()
+
+    // Title / Header
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(20)
+    doc.setTextColor(30, 58, 138) // Navy
+    doc.text('BON DE LIVRAISON RECU', 14, 20)
+
+    doc.setFontSize(10)
+    doc.setTextColor(100, 100, 100)
+    doc.text(`Généré le: ${now.toLocaleDateString('fr-FR')} à ${now.toLocaleTimeString('fr-FR')}`, 14, 26)
+
+    // Invoice Details Table
+    const detailsHead = [['Bon de livraison', 'Commande', 'Statut', 'Date signature']]
+    const detailsBody = [[
+      details.numero_bl,
+      details.numero_commande || 'N/A',
+      'Signé & Livré',
+      details.date_signature ? new Date(details.date_signature).toLocaleString('fr-FR') : 'Non signée'
+    ]]
+
+    autoTable(doc, {
+      startY: 32,
+      head: detailsHead,
+      body: detailsBody,
+      theme: 'grid',
+      headStyles: { fillColor: [30, 58, 138] },
+    })
+
+    // Client box
+    const clientY = (doc as any).lastAutoTable.finalY + 10
+    doc.rect(14, clientY, 182, 32)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(10)
+    doc.setTextColor(30, 58, 138)
+    doc.text('DESTINATAIRE & ADRESSE DE LIVRAISON', 18, clientY + 6)
+    
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(15, 23, 42)
+    doc.text(`Client : ${details.client_prenom || ''} ${details.client_nom || ''}`, 18, clientY + 13)
+    doc.text(`Ville : ${details.client_ville || 'Non spécifiée'}`, 18, clientY + 19)
+    doc.text(`Mode : ${details.mode_livraison === 'retrait_magasin' ? 'Retrait magasin' : 'Livraison à domicile'}`, 18, clientY + 25)
+
+    // Items table
+    const itemsHead = [['Article', 'Quantité', 'Prix Unitaire', 'Total TTC']]
+    const itemsBody = details.lignes?.map((item: any) => [
+      item.designation,
+      String(item.quantite),
+      Number(item.prix_unitaire_ttc).toFixed(2) + ' €',
+      Number(item.quantite * item.prix_unitaire_ttc).toFixed(2) + ' €',
+    ]) || []
+
+    autoTable(doc, {
+      startY: clientY + 45,
+      head: itemsHead,
+      body: itemsBody,
+      theme: 'striped',
+      headStyles: { fillColor: [30, 58, 138] },
+    })
+
+    // Sum details
+    const totalY = (doc as any).lastAutoTable.finalY + 10
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    doc.setTextColor(30, 58, 138)
+    
+    const baseTotal = Number(details.montant_total_ttc || 0)
+    doc.text(`Total Articles : ${baseTotal.toFixed(2)} €`, 130, totalY)
+    doc.setFontSize(13)
+    doc.text(`NET PAYÉ : ${baseTotal.toFixed(2)} €`, 130, totalY + 8)
+
+    // Signatures
+    const sigY = totalY + 20
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(100, 100, 100)
+    
+    const signedBy = details.signe_par_parent 
+      ? `Tiers: ${details.parent_nom} (${details.parent_lien || 'Proche'})`
+      : `${details.client_prenom || ''} ${details.client_nom || ''}`
+      
+    doc.text('Signature Expéditeur', 30, sigY + 5)
+    doc.text(`Preuve de signature (${signedBy})`, 130, sigY + 5)
+
+    if (details.signature_data) {
+      try {
+        doc.addImage(details.signature_data, 'PNG', 130, sigY + 10, 45, 20)
+      } catch (e) {
+        console.error('Failed to embed signature image in PDF:', e)
+      }
+    }
+
+    doc.save(`decoshop-recu-livraison-${details.numero_bl}.pdf`)
+  }
+
   const toggleLanguage = () => {
     setLocale(locale === 'fr' ? 'ar' : 'fr')
   }
@@ -206,11 +306,54 @@ export default function SignClient({
           <div className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-md text-center space-y-4 animate-fade-in">
             <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto" />
             <h2 className="text-lg font-bold font-display text-navy mb-1">
-              {t('signature.public.already_signed_title', 'Déjà signé')}
+              {t('signature.public.already_signed_title', 'Livraison signée')}
             </h2>
-            <p className="text-xs text-muted leading-relaxed">
-              {t('signature.public.already_signed_body', 'Cette livraison a déjà été signée — merci !')}
-            </p>
+            
+            <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl text-left space-y-2 text-xs">
+              <div>
+                <span className="font-bold text-navy">{t('signature.public.bl_label', 'Bon de livraison')} :</span>{' '}
+                <span className="text-slate-800 font-semibold">{details.numero_bl}</span>
+              </div>
+              <div>
+                <span className="font-bold text-navy">{t('signature.public.client_label', 'Destinataire')} :</span>{' '}
+                <span className="text-slate-800 font-semibold">{details.client_prenom} {details.client_nom}</span>
+              </div>
+              {details.date_signature && (
+                <div>
+                  <span className="font-bold text-navy">{t('signature.signed_at', 'Signé le')} :</span>{' '}
+                  <span className="text-slate-800 font-semibold">
+                    {new Date(details.date_signature).toLocaleString('fr-FR')}
+                  </span>
+                </div>
+              )}
+              <div>
+                <span className="font-bold text-navy">{t('signature.signed_by', 'Signé par')} :</span>{' '}
+                <span className="text-slate-800 font-semibold">
+                  {details.signe_par_parent
+                    ? `${details.parent_nom} (Tiers, ${details.parent_lien || 'Proche'})`
+                    : `${details.client_prenom} ${details.client_nom}`}
+                </span>
+              </div>
+            </div>
+
+            {details.signature_data && (
+              <div className="space-y-1.5 text-center mt-2.5">
+                <span className="text-[10px] text-muted font-bold uppercase tracking-wider block">Preuve de signature</span>
+                <img
+                  src={details.signature_data}
+                  alt="Signature Preuve"
+                  className="max-w-[240px] h-[100px] object-contain mx-auto border border-line rounded-xl bg-slate-50 p-2 shadow-inner"
+                />
+              </div>
+            )}
+
+            <button
+              onClick={handleDownloadPDF}
+              className="w-full bg-navy hover:bg-navy-700 text-white font-extrabold p-3.5 rounded-xl text-center shadow-md text-xs transition-all flex items-center justify-center gap-2 mt-4"
+            >
+              <Printer className="w-4 h-4" />
+              {t('signature.download_receipt', 'Télécharger le reçu de livraison PDF')}
+            </button>
           </div>
         )}
 

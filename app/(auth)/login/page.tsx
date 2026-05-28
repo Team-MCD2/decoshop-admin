@@ -261,8 +261,6 @@ export default function LoginPage() {
               <div className="text-xs text-muted leading-relaxed">
                 <span className="text-ink font-medium">Identifiants de démonstration</span>
                 <br />
-                Admin : <code className="text-navy bg-navy/5 px-1 rounded text-[11px]">fayssal@decoshop-toulouse.fr</code> / <code className="text-navy bg-navy/5 px-1 rounded text-[11px]">Admin1234!</code>
-                <br />
                 Livreur : <code className="text-navy bg-navy/5 px-1 rounded text-[11px]">karim@decoshop-toulouse.fr</code> / <code className="text-navy bg-navy/5 px-1 rounded text-[11px]">Test1234!</code>
               </div>
             </div>

@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { createManualOrderAction, getUnfulfilledShopifyOrdersAction, createBlFromShopifyOrderAction, getShopifyOrderLineItemsAction } from './actions'
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import {
@@ -81,7 +82,7 @@ export default function BonsLivraisonClient({
     setRefreshing(true)
     const { data: latestBLs } = await supabase
       .from('bons_livraison')
-      .select('*, clients(*), commandes(*), livreur:profiles!bons_livraison_livreur_id_fkey(id, nom, prenom), lignes_bl(*)')
+      .select('*, clients(*), commandes(*), livreur:profiles!bons_livraison_livreur_id_fkey(id, nom, prenom)')
       .order('created_at', { ascending: false })
 
     if (latestBLs) {
@@ -211,7 +212,23 @@ export default function BonsLivraisonClient({
   }
 
   // --- PDF Recap ---
-  const handlePrintBL = (bl: any) => {
+  const handlePrintBL = async (bl: any) => {
+    let lines = bl.lignes_bl
+    if (!lines) {
+      const { data, error } = await supabase
+        .from('lignes_bl')
+        .select('*')
+        .eq('bl_id', bl.id)
+        .order('ordre_tri', { ascending: true })
+      
+      if (error) {
+        console.error('Failed to load BL line items for PDF:', error)
+        alert("Erreur lors de la récupération des articles du bon de livraison.")
+        return
+      }
+      lines = data || []
+    }
+
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
     const now = new Date()
 
@@ -259,13 +276,13 @@ export default function BonsLivraisonClient({
 
     // Items table
     const itemsHead = [['Article', 'Quantité', 'Prix Unitaire', 'Total HT', 'Total TTC']]
-    const itemsBody = bl.lignes_bl?.map((item: any) => [
+    const itemsBody = lines.map((item: any) => [
       item.designation,
       String(item.quantite),
       Number(item.prix_unitaire_ttc).toFixed(2) + ' €',
       Number(item.quantite * item.prix_unitaire_ttc * 0.8).toFixed(2) + ' €',
       Number(item.quantite * item.prix_unitaire_ttc).toFixed(2) + ' €',
-    ]) || []
+    ])
 
     autoTable(doc, {
       startY: clientY + 45,
@@ -682,79 +699,22 @@ export default function BonsLivraisonClient({
           onSave={async (formData) => {
             setSaving(true)
             try {
-              // 1. Insert Client
-              const { data: newClient, error: clientError } = await supabase
-                .from('clients')
-                .insert({
-                  nom: formData.client_nom,
-                  prenom: formData.client_prenom || null,
-                  email: formData.client_email || null,
-                  telephone: formData.client_telephone || null,
-                  adresse_ligne1: formData.client_adresse,
-                })
-                .select()
-                .single()
+              let res
+              if (formData.is_import) {
+                res = await createBlFromShopifyOrderAction(formData)
+              } else {
+                res = await createManualOrderAction(formData)
+              }
 
-              if (clientError) throw clientError
-
-              // 2. Insert Mock Shopify Order
-              const totalAmount = formData.items.reduce((s: number, it: any) => s + (it.quantite * it.prix_unitaire), 0)
-              const mockOrderId = 'manual-' + Math.random().toString(36).substring(2, 11)
-              const mockOrderNum = 'DEC-M-' + Math.floor(Math.random() * 9000 + 1000)
-
-              const { data: newOrder, error: orderError } = await supabase
-                .from('commandes')
-                .insert({
-                  client_id: newClient.id,
-                  numero_commande: mockOrderNum,
-                  shopify_order_id: mockOrderId,
-                  statut: 'en_preparation',
-                  montant_total_ttc: totalAmount,
-                })
-                .select()
-                .single()
-
-              if (orderError) throw orderError
-
-              // 3. Insert Delivery Note (BL)
-              const { data: newBL, error: blError } = await supabase
-                .from('bons_livraison')
-                .insert({
-                  commande_id: newOrder.id,
-                  client_id: newClient.id,
-                  statut: formData.livreur_id ? 'assigne' : 'cree',
-                  mode_livraison: formData.mode_livraison,
-                  livreur_id: formData.livreur_id || null,
-                  creneau: formData.creneau || null,
-                  date_livraison_prevue: formData.date_livraison_prevue || null,
-                  montant_total_ttc: totalAmount,
-                })
-                .select()
-                .single()
-
-              if (blError) throw blError
-
-              // 4. Insert lines detail
-              const lignes = formData.items.map((it: any, idx: number) => ({
-                bl_id: newBL.id,
-                designation: it.designation,
-                quantite: it.quantite,
-                prix_unitaire_ttc: it.prix_unitaire,
-                ordre_tri: idx + 1,
-              }))
-
-              const { error: lineError } = await supabase
-                .from('lignes_bl')
-                .insert(lignes)
-
-              if (lineError) throw lineError
-
-              setCreateOpen(false)
-              alert('Bon de livraison créé avec succès !')
-              handleRefresh()
-
+              if (res.success) {
+                setCreateOpen(false)
+                alert(`Bon de livraison créé avec succès ! Numéro : ${res.numero_bl}`)
+                handleRefresh()
+              } else {
+                alert(res.error || 'Erreur lors de la création.')
+              }
             } catch (err: any) {
-              console.error('Failed to create manual BL:', err)
+              console.error('Failed to create BL:', err)
               alert('Erreur lors de la création : ' + err.message)
             } finally {
               setSaving(false)
@@ -779,6 +739,24 @@ function CreateBlModal({
   onClose: () => void
   onSave: (data: any) => void
 }) {
+  const [mode, setMode] = useState<'shopify' | 'manual'>('shopify')
+
+  // Shopify orders state
+  const [shopifyOrders, setShopifyOrders] = useState<any[]>([])
+  const [loadingOrders, setLoadingOrders] = useState(false)
+  const [loadingItems, setLoadingItems] = useState(false)
+  const [selectedOrderId, setSelectedOrderId] = useState('')
+  const [selectedOrderName, setSelectedOrderName] = useState('')
+  const [shopifyCustomerId, setShopifyCustomerId] = useState<string | null>(null)
+  const [orderFilter, setOrderFilter] = useState('')
+  const [showOrderDropdown, setShowOrderDropdown] = useState(false)
+
+  // Autocomplete products suggestions state (for manual mode)
+  const [activeSuggestionIdx, setActiveSuggestionIdx] = useState<number | null>(null)
+  const [suggestions, setSuggestions] = useState<any[]>([])
+  const searchTimeoutRef = useRef<number | null>(null)
+
+  // Client Details form state
   const [clientNom, setClientNom] = useState('')
   const [clientPrenom, setClientPrenom] = useState('')
   const [clientEmail, setClientEmail] = useState('')
@@ -790,10 +768,64 @@ function CreateBlModal({
   const [creneau, setCreneau] = useState('')
   const [items, setItems] = useState([{ designation: '', quantite: 1, prix_unitaire: 0 }])
 
+  // Load Shopify orders on mount
+  useEffect(() => {
+    setLoadingOrders(true)
+    getUnfulfilledShopifyOrdersAction()
+      .then((res) => {
+        if (res.success && res.orders) {
+          setShopifyOrders(res.orders)
+        } else {
+          console.error('Failed to load Shopify orders:', res.error)
+        }
+      })
+      .catch((err) => console.error('Error loading Shopify orders:', err))
+      .finally(() => setLoadingOrders(false))
+  }, [])
+
+  // Filter shopify orders in client view
+  const filteredOrders = useMemo(() => {
+    const q = orderFilter.toLowerCase().trim()
+    if (!q) return shopifyOrders
+    return shopifyOrders.filter(
+      (o) =>
+        o.name.toLowerCase().includes(q) ||
+        o.customer_name.toLowerCase().includes(q)
+    )
+  }, [shopifyOrders, orderFilter])
+
+  // Item list utilities
   const addItem = () => setItems([...items, { designation: '', quantite: 1, prix_unitaire: 0 }])
   const removeItem = (idx: number) => setItems(items.filter((_, i) => i !== idx))
   const updateItem = (idx: number, field: string, value: any) => {
     setItems(items.map((it, i) => (i === idx ? { ...it, [field]: value } : it)))
+  }
+
+  // Handle autocomplete query for manual item name
+  const handleDesignationChange = (idx: number, val: string) => {
+    updateItem(idx, 'designation', val)
+
+    if (searchTimeoutRef.current) window.clearTimeout(searchTimeoutRef.current)
+
+    const q = val.trim()
+    if (q.length < 1) {
+      setSuggestions([])
+      setActiveSuggestionIdx(null)
+      return
+    }
+
+    searchTimeoutRef.current = window.setTimeout(async () => {
+      try {
+        const r = await fetch(`/api/shopify/products?q=${encodeURIComponent(q)}`)
+        if (r.ok) {
+          const data = await r.json()
+          setSuggestions(data.products || [])
+          setActiveSuggestionIdx(idx)
+        }
+      } catch (err) {
+        console.error('Error fetching product suggestions:', err)
+      }
+    }, 200) as unknown as number
   }
 
   const total = items.reduce((s, it) => s + it.quantite * it.prix_unitaire, 0)
@@ -809,18 +841,43 @@ function CreateBlModal({
       alert('Veuillez saisir au moins un article.')
       return
     }
-    onSave({
-      client_nom: clientNom.trim(),
-      client_prenom: clientPrenom.trim(),
-      client_email: clientEmail.trim(),
-      client_telephone: clientTelephone.trim(),
-      client_adresse: clientAdresse.trim(),
-      mode_livraison: modeLivraison,
-      livreur_id: livreurId || undefined,
-      date_livraison_prevue: datePrevue || undefined,
-      creneau: creneau || undefined,
-      items: validItems,
-    })
+
+    if (mode === 'shopify') {
+      if (!selectedOrderId) {
+        alert('Veuillez sélectionner une commande Shopify.')
+        return
+      }
+      onSave({
+        is_import: true,
+        shopify_order_id: selectedOrderId,
+        numero_commande: selectedOrderName,
+        client_nom: clientNom.trim(),
+        client_prenom: clientPrenom.trim(),
+        client_email: clientEmail.trim(),
+        client_telephone: clientTelephone.trim(),
+        client_adresse: clientAdresse.trim(),
+        mode_livraison: modeLivraison,
+        livreur_id: livreurId || undefined,
+        date_livraison_prevue: datePrevue || undefined,
+        creneau: creneau || undefined,
+        items: validItems,
+        shopify_customer_id: shopifyCustomerId,
+      })
+    } else {
+      onSave({
+        is_import: false,
+        client_nom: clientNom.trim(),
+        client_prenom: clientPrenom.trim(),
+        client_email: clientEmail.trim(),
+        client_telephone: clientTelephone.trim(),
+        client_adresse: clientAdresse.trim(),
+        mode_livraison: modeLivraison,
+        livreur_id: livreurId || undefined,
+        date_livraison_prevue: datePrevue || undefined,
+        creneau: creneau || undefined,
+        items: validItems,
+      })
+    }
   }
 
   return (
@@ -829,17 +886,182 @@ function CreateBlModal({
         
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-navy-100">
-          <h3 className="text-lg font-bold text-navy font-display mb-0">Créer un Bon de livraison (Manuel)</h3>
+          <h3 className="text-lg font-bold text-navy font-display mb-0">Créer un Bon de livraison</h3>
           <button onClick={onClose} className="rounded-xl p-2 text-muted hover:bg-navy-50 transition-all">
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Source Toggle Tabs */}
+        <div className="flex border-b border-navy-100 px-6 bg-navy-50/20 gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              setMode('shopify')
+              setClientNom('')
+              setClientPrenom('')
+              setClientEmail('')
+              setClientTelephone('')
+              setClientAdresse('')
+              setItems([{ designation: '', quantite: 1, prix_unitaire: 0 }])
+              setOrderFilter('')
+              setSelectedOrderId('')
+              setSelectedOrderName('')
+              setShopifyCustomerId(null)
+            }}
+            className={`py-3 text-xs font-black uppercase tracking-wider border-b-2 transition-all ${
+              mode === 'shopify'
+                ? 'border-navy text-navy font-black'
+                : 'border-transparent text-muted hover:text-navy'
+            }`}
+          >
+            Commande Shopify
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMode('manual')
+              setClientNom('')
+              setClientPrenom('')
+              setClientEmail('')
+              setClientTelephone('')
+              setClientAdresse('')
+              setItems([{ designation: '', quantite: 1, prix_unitaire: 0 }])
+              setSelectedOrderId('')
+              setSelectedOrderName('')
+              setShopifyCustomerId(null)
+            }}
+            className={`py-3 text-xs font-black uppercase tracking-wider border-b-2 transition-all ${
+              mode === 'manual'
+                ? 'border-navy text-navy font-black'
+                : 'border-transparent text-muted hover:text-navy'
+            }`}
+          >
+            Saisie Manuelle (Hors Shopify)
+          </button>
+        </div>
+
         {/* Form scrollable container */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto flex-1 space-y-6">
+          
+          {/* Shopify Order Import Selector */}
+          {mode === 'shopify' && (
+            <div className="bg-cream/40 p-4 rounded-xl border border-navy-100/60 space-y-3">
+              <h4 className="text-xs uppercase font-bold text-navy tracking-wider mb-0">Importer depuis Shopify</h4>
+              <div className="relative">
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder={loadingOrders ? "Chargement des commandes..." : "Rechercher par N° commande (#1001) ou client..."}
+                      value={orderFilter}
+                      onChange={(e) => {
+                        setOrderFilter(e.target.value)
+                        setShowOrderDropdown(true)
+                      }}
+                      onFocus={() => setShowOrderDropdown(true)}
+                      onBlur={() => setTimeout(() => setShowOrderDropdown(false), 200)}
+                      className="w-full rounded-xl border border-navy-100 bg-white px-3.5 py-2 text-xs outline-none focus:ring-1 focus:ring-yellow"
+                      disabled={loadingOrders}
+                    />
+                    {showOrderDropdown && filteredOrders.length > 0 && (
+                      <div className="absolute left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-white border border-navy-100 rounded-xl shadow-lg z-50 divide-y divide-navy-50">
+                        {filteredOrders.map((o) => (
+                          <div
+                            key={o.id}
+                            onMouseDown={async (e) => {
+                              e.preventDefault()
+                              setSelectedOrderId(o.id)
+                              setSelectedOrderName(o.name)
+                              setOrderFilter(`${o.name} - ${o.customer_name}`)
+                              setShowOrderDropdown(false)
+
+                              // Auto-fill details
+                              setClientNom(o.shipping_address?.last_name || o.customer?.last_name || '')
+                              setClientPrenom(o.shipping_address?.first_name || o.customer?.first_name || '')
+                              setClientEmail(o.email || o.customer?.email || '')
+                              setClientTelephone(o.shipping_address?.phone || o.customer?.phone || '')
+                              
+                              let fullAddr = o.shipping_address?.address1 || ''
+                              if (o.shipping_address?.city) {
+                                fullAddr += `, ${o.shipping_address.zip || ''} ${o.shipping_address.city}`
+                              }
+                              setClientAdresse(fullAddr)
+
+                              setShopifyCustomerId(o.customer?.id ? String(o.customer.id) : null)
+                              setModeLivraison(o.shipping_address ? 'domicile' : 'retrait_magasin')
+
+                              // Fetch line items on-demand from Shopify
+                              setLoadingItems(true)
+                              setItems([{ designation: 'Chargement des articles...', quantite: 1, prix_unitaire: 0 }])
+                              try {
+                                const res = await getShopifyOrderLineItemsAction(o.id)
+                                if (res.success && res.line_items && res.line_items.length > 0) {
+                                  setItems(
+                                    res.line_items.map((it: any) => ({
+                                      designation: it.title,
+                                      quantite: it.quantity,
+                                      prix_unitaire: Number(it.price)
+                                    }))
+                                  )
+                                } else {
+                                  setItems([{ designation: '', quantite: 1, prix_unitaire: 0 }])
+                                  if (res.error) {
+                                    alert(res.error)
+                                  }
+                                }
+                              } catch (err: any) {
+                                console.error('Error fetching line items:', err)
+                                setItems([{ designation: '', quantite: 1, prix_unitaire: 0 }])
+                              } finally {
+                                setLoadingItems(false)
+                              }
+                            }}
+                            className="px-3.5 py-2 text-xs hover:bg-cream hover:text-navy cursor-pointer flex justify-between items-center"
+                          >
+                            <div>
+                              <span className="font-black text-navy mr-2">{o.name}</span>
+                              <span className="text-slate-700 font-semibold">{o.customer_name}</span>
+                            </div>
+                            <span className="font-bold text-muted">{Number(o.total_price).toFixed(2)} €</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {showOrderDropdown && filteredOrders.length === 0 && (
+                      <div className="absolute left-0 right-0 mt-1 p-3 text-center bg-white border border-navy-100 rounded-xl shadow-lg z-50 text-xs text-muted">
+                        Aucune commande correspondante en attente.
+                      </div>
+                    )}
+                  </div>
+                  {orderFilter && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedOrderId('')
+                        setSelectedOrderName('')
+                        setOrderFilter('')
+                        setShopifyCustomerId(null)
+                        setClientNom('')
+                        setClientPrenom('')
+                        setClientEmail('')
+                        setClientTelephone('')
+                        setClientAdresse('')
+                        setItems([{ designation: '', quantite: 1, prix_unitaire: 0 }])
+                      }}
+                      className="rounded-xl border border-navy-100 px-3 bg-white text-muted hover:bg-navy-50 text-xs font-bold"
+                    >
+                      Effacer
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Client Details Section */}
           <div className="space-y-3">
-            <h4 className="text-xs uppercase font-bold text-navy-500 tracking-wider mb-2">Informations client</h4>
+            <h4 className="text-xs uppercase font-bold text-navy-500 tracking-wider mb-2">Informations destinataire</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-muted">Nom *</label>
@@ -908,9 +1130,51 @@ function CreateBlModal({
             <div className="space-y-3">
               {items.map((it, idx) => (
                 <div key={idx} className="flex gap-2 items-end">
-                  <div className="flex-1">
+                  <div className="flex-1 relative">
                     {idx === 0 && <label className="block text-xs font-bold text-muted">Désignation *</label>}
-                    <input required value={it.designation} onChange={(e) => updateItem(idx, 'designation', e.target.value)} placeholder="Ex: Tapis berbère" className="w-full rounded-xl border border-navy-100 bg-cream-100/50 px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-yellow" />
+                    <input
+                      required
+                      value={it.designation}
+                      onChange={(e) => {
+                        if (mode === 'manual') {
+                          handleDesignationChange(idx, e.target.value)
+                        } else {
+                          updateItem(idx, 'designation', e.target.value)
+                        }
+                      }}
+                      onFocus={() => {
+                        if (mode === 'manual' && it.designation.trim()) {
+                          handleDesignationChange(idx, it.designation)
+                        }
+                      }}
+                      onBlur={() => setTimeout(() => {
+                        if (activeSuggestionIdx === idx) {
+                          setActiveSuggestionIdx(null)
+                        }
+                      }, 200)}
+                      placeholder="Ex: Tapis berbère"
+                      className="w-full rounded-xl border border-navy-100 bg-cream-100/50 px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-yellow"
+                    />
+                    {mode === 'manual' && activeSuggestionIdx === idx && suggestions.length > 0 && (
+                      <div className="absolute left-0 right-0 mt-1 max-h-40 overflow-y-auto bg-white border border-navy-100 rounded-xl shadow-lg z-50 divide-y divide-navy-50">
+                        {suggestions.map((s, sIdx) => (
+                          <div
+                            key={sIdx}
+                            onMouseDown={(e) => {
+                              e.preventDefault()
+                              updateItem(idx, 'designation', s.title)
+                              updateItem(idx, 'prix_unitaire', s.price || 0)
+                              setSuggestions([])
+                              setActiveSuggestionIdx(null)
+                            }}
+                            className="px-3 py-2 text-xs hover:bg-cream hover:text-navy cursor-pointer flex justify-between items-center"
+                          >
+                            <span className="font-semibold truncate mr-2">{s.title}</span>
+                            <span className="font-bold text-navy shrink-0">{s.price ? `${s.price.toFixed(2)} €` : '—'}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="w-16">
                     {idx === 0 && <label className="block text-xs font-bold text-muted">Qté</label>}
@@ -943,10 +1207,10 @@ function CreateBlModal({
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={saving || !clientNom.trim() || !clientAdresse.trim() || items.every((it) => !it.designation.trim())}
+            disabled={saving || loadingItems || !clientNom.trim() || !clientAdresse.trim() || items.every((it) => !it.designation.trim()) || (mode === 'shopify' && !selectedOrderId)}
             className="rounded-xl bg-navy hover:bg-navy-700 text-white font-bold px-4 py-2.5 text-xs transition-all shadow-sm disabled:opacity-50"
           >
-            {saving ? 'Création...' : 'Créer le BL'}
+            {saving ? 'Création...' : loadingItems ? 'Chargement...' : 'Créer le BL'}
           </button>
         </div>
 

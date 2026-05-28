@@ -20,13 +20,79 @@ export async function POST(request: NextRequest) {
 
     const payload = JSON.parse(rawBody)
     const orderId = String(payload.id)
-    const orderName = payload.name // e.g. "#1001"
+    const orderName = payload.name || `Order-${orderId}`
     
     console.log(`Processing Shopify Webhook: Topic=${topicHeader}, Order=${orderName} (ID=${orderId})`)
 
-    // Only process order creations and updates
-    if (topicHeader !== 'orders/create' && topicHeader !== 'orders/updated') {
+    // Supported webhook topics
+    const allowedTopics = ['orders/create', 'orders/updated', 'orders/cancelled', 'orders/delete']
+    if (!allowedTopics.includes(topicHeader || '')) {
       return NextResponse.json({ success: true, ignored: true, message: `Topic ${topicHeader} ignored.` })
+    }
+
+    // Handle order cancellation
+    if (topicHeader === 'orders/cancelled') {
+      console.log(`[shopify-webhook] Order cancelled: ${orderName} (${orderId})`)
+      
+      const { data: order } = await supabase
+        .from('commandes')
+        .update({ statut: 'annulee', updated_at: new Date().toISOString() })
+        .eq('shopify_order_id', orderId)
+        .select('id')
+        .maybeSingle()
+
+      if (order) {
+        await supabase
+          .from('bons_livraison')
+          .update({ statut: 'abandon', updated_at: new Date().toISOString() })
+          .eq('commande_id', order.id)
+          .not('statut', 'in', '("signe","livre")')
+      }
+
+      return NextResponse.json({ success: true, message: 'Order marked as cancelled locally.' })
+    }
+
+    // Handle order deletion
+    if (topicHeader === 'orders/delete') {
+      console.log(`[shopify-webhook] Order deleted: ${orderId}`)
+
+      const { data: order } = await supabase
+        .from('commandes')
+        .select('id')
+        .eq('shopify_order_id', orderId)
+        .maybeSingle()
+
+      if (order) {
+        try {
+          const { data: bls } = await supabase
+            .from('bons_livraison')
+            .select('id')
+            .eq('commande_id', order.id)
+
+          if (bls) {
+            for (const bl of bls) {
+              await supabase.from('lignes_bl').delete().eq('bl_id', bl.id)
+              await supabase.from('bons_livraison').delete().eq('id', bl.id)
+            }
+          }
+
+          const { error: delOrderError } = await supabase
+            .from('commandes')
+            .delete()
+            .eq('id', order.id)
+
+          if (delOrderError) throw delOrderError
+          console.log(`[shopify-webhook] Successfully deleted order ${orderId} locally.`)
+        } catch (delError: any) {
+          console.warn(`[shopify-webhook] Failed to hard-delete order ${orderId}, falling back to cancelling status:`, delError.message)
+          await supabase
+            .from('commandes')
+            .update({ statut: 'annulee', updated_at: new Date().toISOString() })
+            .eq('id', order.id)
+        }
+      }
+
+      return NextResponse.json({ success: true, message: 'Order deletion processed locally.' })
     }
 
     const customer = payload.customer

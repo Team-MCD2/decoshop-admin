@@ -16,7 +16,7 @@ export async function syncShopifyOrdersAction() {
 
   try {
     // 1. Fetch orders from Shopify
-    const shopifyRes = await getOrders({ limit: '20' }) // Get latest 20 orders
+    const shopifyRes = await getOrders({ limit: '100' }) // Get latest 100 orders
 
     if (shopifyRes.error) {
       // Dissect Shopify API warning details
